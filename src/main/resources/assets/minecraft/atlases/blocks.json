@@ -1,0 +1,107 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "block",
+      "prefix": "block/"
+    },
+    {
+      "type": "directory",
+      "source": "item",
+      "prefix": "item/"
+    },
+    {
+      "type": "directory",
+      "source": "entity/conduit",
+      "prefix": "entity/conduit/"
+    },
+    {
+      "type": "single",
+      "resource": "entity/bell/bell_body"
+    },
+    {
+      "type": "single",
+      "resource": "entity/decorated_pot/decorated_pot_side"
+    },
+    {
+      "type": "single",
+      "resource": "entity/enchanting_table_book"
+    },
+    {
+      "type": "paletted_permutations",
+      "textures": [
+        "trims/items/helmet_trim_coast",
+        "trims/items/chestplate_trim_coast",
+        "trims/items/leggings_trim_coast",
+        "trims/items/boots_trim_coast",
+
+        "trims/items/helmet_trim_dune",
+        "trims/items/chestplate_trim_dune",
+        "trims/items/leggings_trim_dune",
+        "trims/items/boots_trim_dune",
+
+        "trims/items/helmet_trim_eye",
+        "trims/items/chestplate_trim_eye",
+        "trims/items/leggings_trim_eye",
+        "trims/items/boots_trim_eye",
+
+        "trims/items/helmet_trim_rib",
+        "trims/items/chestplate_trim_rib",
+        "trims/items/leggings_trim_rib",
+        "trims/items/boots_trim_rib",
+
+        "trims/items/helmet_trim_sentry",
+        "trims/items/chestplate_trim_sentry",
+        "trims/items/leggings_trim_sentry",
+        "trims/items/boots_trim_sentry",
+
+        "trims/items/helmet_trim_snout",
+        "trims/items/chestplate_trim_snout",
+        "trims/items/leggings_trim_snout",
+        "trims/items/boots_trim_snout",
+
+        "trims/items/helmet_trim_spire",
+        "trims/items/chestplate_trim_spire",
+        "trims/items/leggings_trim_spire",
+        "trims/items/boots_trim_spire",
+
+        "trims/items/helmet_trim_tide",
+        "trims/items/chestplate_trim_tide",
+        "trims/items/leggings_trim_tide",
+        "trims/items/boots_trim_tide",
+
+        "trims/items/helmet_trim_vex",
+        "trims/items/chestplate_trim_vex",
+        "trims/items/leggings_trim_vex",
+        "trims/items/boots_trim_vex",
+
+        "trims/items/helmet_trim_ward",
+        "trims/items/chestplate_trim_ward",
+        "trims/items/leggings_trim_ward",
+        "trims/items/boots_trim_ward",
+
+        "trims/items/helmet_trim_wild",
+        "trims/items/chestplate_trim_wild",
+        "trims/items/leggings_trim_wild",
+        "trims/items/boots_trim_wild"
+      ],
+      "palette_key": "trims/color_palettes/trim_palette",
+      "permutations": {
+        "quartz": "trims/color_palettes/quartz",
+        "iron": "trims/color_palettes/iron",
+        "gold": "trims/color_palettes/gold",
+        "diamond": "trims/color_palettes/diamond",
+        "netherite": "trims/color_palettes/netherite",
+        "redstone": "trims/color_palettes/redstone",
+        "copper": "trims/color_palettes/copper",
+        "emerald": "trims/color_palettes/emerald",
+        "lapis": "trims/color_palettes/lapis",
+        "amethyst": "trims/color_palettes/amethyst",
+        "iron_darker": "trims/color_palettes/iron_darker",
+        "gold_darker": "trims/color_palettes/gold_darker",
+        "diamond_darker": "trims/color_palettes/diamond_darker",
+        "netherite_darker": "trims/color_palettes/netherite_darker"
+      }
+    }
+  ]
+}
