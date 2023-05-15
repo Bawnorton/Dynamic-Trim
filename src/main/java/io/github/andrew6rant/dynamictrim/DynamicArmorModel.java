@@ -2,6 +2,7 @@ package io.github.andrew6rant.dynamictrim;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.DataResult;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.renderer.v1.Renderer;
@@ -13,6 +14,9 @@ import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.model.FabricBakedModel;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.trim.ArmorTrim;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.client.render.model.*;
 import net.minecraft.client.render.model.json.ModelOverrideList;
 import net.minecraft.client.render.model.json.ModelTransformation;
@@ -20,6 +24,8 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
 import net.minecraft.client.util.SpriteIdentifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.registry.RegistryOps;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -31,6 +37,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import static io.github.andrew6rant.dynamictrim.DynamicTrimClient.isStackedTrimsEnabled;
 
 @Environment(EnvType.CLIENT)
 public record DynamicArmorModel(String armorType) implements UnbakedModel, BakedModel, FabricBakedModel {
@@ -86,16 +94,35 @@ public record DynamicArmorModel(String armorType) implements UnbakedModel, Baked
         emitter.emit();
 
         if(stack.getNbt().contains("Trim")) {
-            JsonObject trimJSON = gson.fromJson(stack.getNbt().get("Trim").asString(), JsonObject.class);
-            String id_and_material = trimJSON.get("material").getAsString();
-            String id_and_pattern = trimJSON.get("pattern").getAsString();
-            String material = id_and_material.substring(id_and_material.indexOf(":")+1);
-            String pattern = id_and_pattern.substring(id_and_pattern.indexOf(":")+1);
-            SPRITES[1] = textureGetter2.apply(new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:trims/items/"+armorType+"_trim_"+pattern+"_"+material)));
-            emitter.square(Direction.SOUTH, 0.0f, 0.0f, 1.0f, 1.0f, -1.0f);
-            emitter.spriteBake(0, SPRITES[1], MutableQuadView.BAKE_LOCK_UV);
-            emitter.spriteColor(0, -1, -1, -1, -1);
-            emitter.emit();
+            if (isStackedTrimsEnabled) {       // If StackedTrims mod is installed, iterate through the list of trims
+                assert stack.getNbt() != null; // this code is modified from StackedTrims' ArmorTrimItemMixin
+                NbtList nbtList = stack.getNbt().getList("Trim", 10);
+                for (NbtElement nbtElement : nbtList) {
+                    //System.out.println(nbtElement);
+                    JsonObject trimJSON = gson.fromJson(nbtElement.asString(), JsonObject.class);
+                    String id_and_material = trimJSON.get("material").getAsString();
+                    String id_and_pattern = trimJSON.get("pattern").getAsString();
+                    String material = id_and_material.substring(id_and_material.indexOf(":")+1);
+                    String pattern = id_and_pattern.substring(id_and_pattern.indexOf(":")+1);
+                    SPRITES[1] = textureGetter2.apply(new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:trims/items/"+armorType+"_trim_"+pattern+"_"+material)));
+                    emitter.square(Direction.SOUTH, 0.0f, 0.0f, 1.0f, 1.0f, -1.0f);
+                    emitter.spriteBake(0, SPRITES[1], MutableQuadView.BAKE_LOCK_UV);
+                    emitter.spriteColor(0, -1, -1, -1, -1);
+                    emitter.emit();
+                }
+                //System.out.println("-----------");
+            } else {
+                JsonObject trimJSON = gson.fromJson(stack.getNbt().get("Trim").asString(), JsonObject.class);
+                String id_and_material = trimJSON.get("material").getAsString();
+                String id_and_pattern = trimJSON.get("pattern").getAsString();
+                String material = id_and_material.substring(id_and_material.indexOf(":")+1);
+                String pattern = id_and_pattern.substring(id_and_pattern.indexOf(":")+1);
+                SPRITES[1] = textureGetter2.apply(new SpriteIdentifier(SpriteAtlasTexture.BLOCK_ATLAS_TEXTURE, new Identifier("minecraft:trims/items/"+armorType+"_trim_"+pattern+"_"+material)));
+                emitter.square(Direction.SOUTH, 0.0f, 0.0f, 1.0f, 1.0f, -1.0f);
+                emitter.spriteBake(0, SPRITES[1], MutableQuadView.BAKE_LOCK_UV);
+                emitter.spriteColor(0, -1, -1, -1, -1);
+                emitter.emit();
+            }
         }
         context.meshConsumer().accept(mesh);
     }
