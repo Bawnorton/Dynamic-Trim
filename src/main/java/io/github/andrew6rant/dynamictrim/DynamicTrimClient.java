@@ -10,6 +10,7 @@ public class DynamicTrimClient implements ClientModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
     public static final Boolean isStackedTrimsEnabled = FabricLoader.getInstance().isModLoaded("stacked_trims");
+    public static final Boolean isAllTheTrimsEnabled = FabricLoader.getInstance().isModLoaded("allthetrims");
 
     @Override
     public void onInitializeClient() {

@@ -8,6 +8,7 @@ import io.github.andrew6rant.dynamictrim.DynamicTrimClient;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
 import io.github.andrew6rant.dynamictrim.util.DebugHelper;
 import io.github.andrew6rant.dynamictrim.util.TrimPatternHelper;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.item.ArmorItem;
 import net.minecraft.item.DyeableArmorItem;
@@ -24,7 +25,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-@Mixin(BakedModelManager.class)
+@Mixin(value = BakedModelManager.class, priority = 500)
 public abstract class BakedModelManagerMixin {
     @ModifyExpressionValue(method = "method_45895(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceFinder;findResources(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;"))
     private static Map<Identifier, Resource> addTrimModels(Map<Identifier, Resource> original) {
@@ -94,26 +95,65 @@ public abstract class BakedModelManagerMixin {
 
                         String overrideResourceString;
                         if(armour instanceof DyeableArmorItem) {
-                            overrideResourceString = """
-                                    {
-                                       "parent": "minecraft:item/generated",
-                                       "textures": {
-                                         "layer0": "%s:item/%s",
-                                         "layer1": "minecraft:item/%s_overlay",
-                                         "layer2": "minecraft:trims/items/%s_trim_%s_%s"
-                                       }
-                                    }
-                                    """.formatted(armourId.getNamespace(), armourId.getPath(), armourId.getPath(), armourType, pattern, finalMaterial);
+                            if(DynamicTrimClient.isAllTheTrimsEnabled) {
+                                overrideResourceString = """
+                                        {
+                                           "parent": "minecraft:item/generated",
+                                           "textures": {
+                                             "layer0": "%1$s:item/%2$s",
+                                             "layer1": "minecraft:item/%2$s_overlay",
+                                             "layer2": "minecraft:trims/items/%3$s_trim_%4$s_0_att-blank",
+                                             "layer3": "minecraft:trims/items/%3$s_trim_%4$s_1_att-blank",
+                                             "layer4": "minecraft:trims/items/%3$s_trim_%4$s_2_att-blank",
+                                             "layer5": "minecraft:trims/items/%3$s_trim_%4$s_3_att-blank",
+                                             "layer6": "minecraft:trims/items/%3$s_trim_%4$s_4_att-blank",
+                                             "layer7": "minecraft:trims/items/%3$s_trim_%4$s_5_att-blank",
+                                             "layer8": "minecraft:trims/items/%3$s_trim_%4$s_6_att-blank",
+                                             "layer9": "minecraft:trims/items/%3$s_trim_%4$s_7_att-blank"
+                                           }
+                                        }
+                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern);
+                            } else {
+                                overrideResourceString = """
+                                        {
+                                           "parent": "minecraft:item/generated",
+                                           "textures": {
+                                             "layer0": "%s:item/%s",
+                                             "layer1": "minecraft:item/%s_overlay",
+                                             "layer2": "minecraft:trims/items/%s_trim_%s_%s"
+                                           }
+                                        }
+                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourId.getPath(), armourType, pattern, finalMaterial);
+                            }
                         } else {
-                            overrideResourceString = """
-                                    {
-                                       "parent": "minecraft:item/generated",
-                                       "textures": {
-                                         "layer0": "%s:item/%s",
-                                         "layer1": "minecraft:trims/items/%s_trim_%s_%s"
-                                       }
-                                    }
-                                    """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern, finalMaterial);
+                            if(DynamicTrimClient.isAllTheTrimsEnabled) {
+                                overrideResourceString = """
+                                        {
+                                           "parent": "minecraft:item/generated",
+                                           "textures": {
+                                             "layer0": "%1$s:item/%2$s",
+                                             "layer1": "minecraft:trims/items/%3$s_trim_%4$s_0_att-blank",
+                                             "layer2": "minecraft:trims/items/%3$s_trim_%4$s_1_att-blank",
+                                             "layer3": "minecraft:trims/items/%3$s_trim_%4$s_2_att-blank",
+                                             "layer4": "minecraft:trims/items/%3$s_trim_%4$s_3_att-blank",
+                                             "layer5": "minecraft:trims/items/%3$s_trim_%4$s_4_att-blank",
+                                             "layer6": "minecraft:trims/items/%3$s_trim_%4$s_5_att-blank",
+                                             "layer7": "minecraft:trims/items/%3$s_trim_%4$s_6_att-blank",
+                                             "layer8": "minecraft:trims/items/%3$s_trim_%4$s_7_att-blank"
+                                           }
+                                        }
+                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern);
+                            } else {
+                                overrideResourceString = """
+                                        {
+                                           "parent": "minecraft:item/generated",
+                                           "textures": {
+                                             "layer0": "%s:item/%s",
+                                             "layer1": "minecraft:trims/items/%s_trim_%s_%s"
+                                           }
+                                        }
+                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern, finalMaterial);
+                            }
                         }
                         Identifier overrideResourceModelId = new Identifier(armourId.getNamespace(), "models/item/" + armourId.getPath() + "_dynamic-trim_" + pattern + "_trim_" + finalMaterial + ".json");
                         Resource overrideResource = new Resource(finalResource.getPack(), () -> IOUtils.toInputStream(overrideResourceString, "UTF-8"));
