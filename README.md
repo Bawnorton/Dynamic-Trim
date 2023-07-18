@@ -10,6 +10,3 @@ Before:
 After:
 
 ![image](https://github.com/Andrew6rant/Dynamic-Trim/assets/57331134/c961970e-e850-46c3-acb1-972d4e298c3b)
-
-
-This project is experimental and extremely un-optimized (the code runs every single tick an armor item is visible). Check back later once I've built cache generation logic.
