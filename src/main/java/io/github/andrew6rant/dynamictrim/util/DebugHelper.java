@@ -17,7 +17,7 @@ public abstract class DebugHelper {
             Path gameDir = FabricLoader.getInstance().getGameDir();
             File debugDir = gameDir.resolve("dynamic-trims-debug").resolve(directory).toFile();
             debugDir.mkdirs();
-            File debugFile = debugDir.toPath().resolve(filename.replace("/", "_")).toFile();
+            File debugFile = debugDir.toPath().resolve(filename.replace("/", "_").replace(":", "_")).toFile();
             debugFile.createNewFile();
 
             Writer writer = new FileWriter(debugFile);
