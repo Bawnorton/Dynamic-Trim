@@ -5,34 +5,36 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.andrew6rant.dynamictrim.DynamicTrimClient;
+import io.github.andrew6rant.dynamictrim.extend.SmithingTemplateItemExtender;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
 import io.github.andrew6rant.dynamictrim.util.DebugHelper;
-import io.github.andrew6rant.dynamictrim.util.TrimPatternHelper;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.item.ArmorItem;
-import net.minecraft.item.DyeableArmorItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Mixin(value = BakedModelManager.class, priority = 500)
 public abstract class BakedModelManagerMixin {
     @ModifyExpressionValue(method = "method_45895(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/ResourceFinder;findResources(Lnet/minecraft/resource/ResourceManager;)Ljava/util/Map;"))
-    private static Map<Identifier, Resource> addTrimModels(Map<Identifier, Resource> original) {
+    private static Map<Identifier, Resource> addDynamicItemTrimModels(Map<Identifier, Resource> original) {
         Set<ArmorItem> armourItems = new HashSet<>();
         Registries.ITEM.forEach(item -> {
             if (item instanceof ArmorItem armourItem) armourItems.add(armourItem);
         });
+        List<Identifier> smithingTemplatePatternIds = Registries.ITEM.stream()
+                .filter(item -> item instanceof SmithingTemplateItemExtender)
+                .map(item -> ((SmithingTemplateItemExtender) item).dynamicTrim$getPatternAssetId())
+                .filter(Objects::nonNull)
+                .toList();
         for (ArmorItem armour : armourItems) {
             Identifier armourId = Registries.ITEM.getId(armour);
             Identifier resourceId = new Identifier(armourId.getNamespace(), "models/item/" + armourId.getPath() + ".json");
@@ -53,119 +55,89 @@ public abstract class BakedModelManagerMixin {
                 continue;
             }
             try (BufferedReader reader = resource.getReader()) {
-                JsonObject modelJson = JsonHelper.fromJson(reader, JsonObject.class);
-                if(!modelJson.has("overrides")) {
-                    modelJson.add("overrides", new JsonArray());
+                JsonObject model = JsonHelper.fromJson(reader, JsonObject.class);
+                if(!model.has("textures")) {
+                    DynamicTrimClient.LOGGER.warn("Item " + armourId + "'s model does not have a textures parameter, skipping");
+                    continue;
                 }
-                JsonArray overrides = modelJson.getAsJsonArray("overrides");
-                JsonArray newOverrides = new JsonArray();
-                for(JsonElement element: overrides) {
-                    if(!element.isJsonObject()) continue;
 
-                    JsonObject override = element.getAsJsonObject();
-                    String model = override.get("model").getAsString();
-                    JsonObject predicate = override.getAsJsonObject("predicate");
-                    float trimType = predicate.get("trim_type").getAsFloat();
+                JsonObject textures = model.get("textures").getAsJsonObject();
+                if (!textures.has("layer0")) {
+                    DynamicTrimClient.LOGGER.warn("Item " + armourId + "'s model does not have a layer0 texture, skipping");
+                    continue;
+                }
 
-                    int lastUnderscore = model.lastIndexOf('_');
-                    int secondLastUnderscore = model.lastIndexOf('_', lastUnderscore - 1);
-                    if(lastUnderscore == -1 || secondLastUnderscore == -1) continue;
+                String baseTexture = textures.get("layer0").getAsString();
+                if (!model.has("overrides")) {
+                    DynamicTrimClient.LOGGER.warn("Item " + armourId + "'s model does not have an overrides parameter, skipping");
+                    continue;
+                }
 
-                    String material = model.substring(secondLastUnderscore + 1, lastUnderscore);
-                    String preMaterial = model.substring(0, secondLastUnderscore);
-                    if(material.equals("darker")) {
-                        int thirdLastUnderscore = model.lastIndexOf('_', secondLastUnderscore - 1);
-                        if(thirdLastUnderscore == -1) continue;
-                        material = model.substring(thirdLastUnderscore + 1, secondLastUnderscore);
-                        preMaterial = model.substring(0, thirdLastUnderscore);
-                    }
+                JsonArray overrides = model.get("overrides").getAsJsonArray();
+                JsonArray dynamicOverrides = new JsonArray();
+                for(JsonElement override: overrides) {
+                    if(!(override.isJsonObject())) continue;
 
-                    final Resource finalResource = resource;
-                    final String finalMaterial = material;
-                    final String finalPreMaterial = preMaterial;
-                    TrimPatternHelper.loopTrimPaterns(patternId -> {
-                        String pattern = patternId.toString().replace(':', '-');
-                        JsonObject newOverride = new JsonObject();
-                        newOverride.addProperty("model", finalPreMaterial + "_dynamic-trim_" + pattern + "_trim_" + finalMaterial);
-                        JsonObject newPredicate = new JsonObject();
-                        newPredicate.addProperty("trim_type", trimType);
-                        newPredicate.addProperty("dynamic-trim-pattern", pattern);
-                        newOverride.add("predicate", newPredicate);
-                        newOverrides.add(newOverride);
+                    JsonObject overrideJson = override.getAsJsonObject();
+                    String overrideModel = overrideJson.get("model").getAsString();
+                    String material = StringUtils.substringBetween(overrideModel, baseTexture + "_", "_trim");
+                    JsonObject predicate = overrideJson.getAsJsonObject("predicate");
 
-                        String overrideResourceString;
-                        if(armour instanceof DyeableArmorItem) {
-                            if(DynamicTrimClient.isAllTheTrimsEnabled) {
-                                overrideResourceString = """
-                                        {
-                                           "parent": "minecraft:item/generated",
-                                           "textures": {
-                                             "layer0": "%1$s:item/%2$s",
-                                             "layer1": "minecraft:item/%2$s_overlay",
-                                             "layer2": "minecraft:trims/items/%3$s_trim_%4$s_0_att-blank",
-                                             "layer3": "minecraft:trims/items/%3$s_trim_%4$s_1_att-blank",
-                                             "layer4": "minecraft:trims/items/%3$s_trim_%4$s_2_att-blank",
-                                             "layer5": "minecraft:trims/items/%3$s_trim_%4$s_3_att-blank",
-                                             "layer6": "minecraft:trims/items/%3$s_trim_%4$s_4_att-blank",
-                                             "layer7": "minecraft:trims/items/%3$s_trim_%4$s_5_att-blank",
-                                             "layer8": "minecraft:trims/items/%3$s_trim_%4$s_6_att-blank",
-                                             "layer9": "minecraft:trims/items/%3$s_trim_%4$s_7_att-blank"
-                                           }
-                                        }
-                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern);
-                            } else {
-                                overrideResourceString = """
-                                        {
-                                           "parent": "minecraft:item/generated",
-                                           "textures": {
-                                             "layer0": "%s:item/%s",
-                                             "layer1": "minecraft:item/%s_overlay",
-                                             "layer2": "minecraft:trims/items/%s_trim_%s_%s"
-                                           }
-                                        }
-                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourId.getPath(), armourType, pattern, finalMaterial);
+                    for(Identifier patternId: smithingTemplatePatternIds) {
+                        String pattern = patternId.toString().replace(":", "-");
+                        JsonObject dynamicOverride = new JsonObject();
+                        dynamicOverride.addProperty("model", "%s_%s_%s_trim_%s".formatted(
+                                baseTexture, DynamicTrimClient.PATTERN_ASSET_NAME, pattern, material
+                        ));
+                        JsonObject dynamicPredicate = predicate.deepCopy();
+                        dynamicPredicate.addProperty("trim_pattern", pattern);
+                        dynamicOverride.add("predicate", dynamicPredicate);
+                        dynamicOverrides.add(dynamicOverride);
+
+                        JsonObject modelOverrideJson = new JsonObject();
+                        modelOverrideJson.addProperty("parent", model.get("parent").getAsString());
+                        JsonObject overrideTextures = new JsonObject();
+                        modelOverrideJson.add("textures", overrideTextures);
+                        overrideTextures.addProperty("layer0", baseTexture);
+
+                        int layer = 0;
+                        while(true) {
+                            layer++;
+                            JsonElement layerElement = textures.get("layer" + layer);
+                            if(layerElement != null) {
+                                overrideTextures.addProperty("layer" + layer, layerElement.getAsString());
+                                continue;
                             }
-                        } else {
-                            if(DynamicTrimClient.isAllTheTrimsEnabled) {
-                                overrideResourceString = """
-                                        {
-                                           "parent": "minecraft:item/generated",
-                                           "textures": {
-                                             "layer0": "%1$s:item/%2$s",
-                                             "layer1": "minecraft:trims/items/%3$s_trim_%4$s_0_att-blank",
-                                             "layer2": "minecraft:trims/items/%3$s_trim_%4$s_1_att-blank",
-                                             "layer3": "minecraft:trims/items/%3$s_trim_%4$s_2_att-blank",
-                                             "layer4": "minecraft:trims/items/%3$s_trim_%4$s_3_att-blank",
-                                             "layer5": "minecraft:trims/items/%3$s_trim_%4$s_4_att-blank",
-                                             "layer6": "minecraft:trims/items/%3$s_trim_%4$s_5_att-blank",
-                                             "layer7": "minecraft:trims/items/%3$s_trim_%4$s_6_att-blank",
-                                             "layer8": "minecraft:trims/items/%3$s_trim_%4$s_7_att-blank"
-                                           }
-                                        }
-                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern);
+
+                            if(!material.equals("dynamic")) {
+                                Identifier trimLayerTextureId = new Identifier(baseTexture).withPath("trims/items/%s_trim_%s_%s".formatted(
+                                        armourType, pattern, material
+                                ));
+                                overrideTextures.addProperty("layer" + layer, trimLayerTextureId.toString());
                             } else {
-                                overrideResourceString = """
-                                        {
-                                           "parent": "minecraft:item/generated",
-                                           "textures": {
-                                             "layer0": "%s:item/%s",
-                                             "layer1": "minecraft:trims/items/%s_trim_%s_%s"
-                                           }
-                                        }
-                                        """.formatted(armourId.getNamespace(), armourId.getPath(), armourType, pattern, finalMaterial);
+                                for(int i = 0; i < 8; i++) {
+                                    Identifier trimLayerTextureId = new Identifier(baseTexture).withPath("trims/items/%s_trim_%s_%s_%s".formatted(
+                                            armourType, pattern, i, material
+                                    ));
+                                    overrideTextures.addProperty("layer" + (layer + i), trimLayerTextureId.toString());
+                                }
                             }
+                            break;
                         }
-                        Identifier overrideResourceModelId = new Identifier(armourId.getNamespace(), "models/item/" + armourId.getPath() + "_dynamic-trim_" + pattern + "_trim_" + finalMaterial + ".json");
-                        Resource overrideResource = new Resource(finalResource.getPack(), () -> IOUtils.toInputStream(overrideResourceString, "UTF-8"));
-                        original.put(overrideResourceModelId, overrideResource);
-                        DebugHelper.createDebugFile("models", armourId + "_dynamic-trim_" + pattern + "_trim_" + finalMaterial + ".json", overrideResourceString);
-                    });
+
+                        Identifier overrideResourceModelId = new Identifier(armourId.getNamespace(), "models/%s_%s_%s_trim_%s.json".formatted(
+                                new Identifier(baseTexture).getPath(), DynamicTrimClient.PATTERN_ASSET_NAME, pattern, material
+                        ));
+                        Resource overrideResourceModel = new Resource(resource.getPack(), () -> IOUtils.toInputStream(JsonHelper.toJsonString(modelOverrideJson), "UTF-8"));
+                        original.put(overrideResourceModelId, overrideResourceModel);
+                        DebugHelper.createDebugFile("models", "%s_%s_%s_trim_%s.json".formatted(
+                                baseTexture, DynamicTrimClient.PATTERN_ASSET_NAME, pattern, material
+                        ), JsonHelper.toJsonString(modelOverrideJson));
+                    }
                 }
-                modelJson.add("overrides", newOverrides);
-
-                resource = new Resource(resource.getPack(), () -> IOUtils.toInputStream(JsonHelper.toJson(modelJson), "UTF-8"));
-
-                DebugHelper.createDebugFile("models", armourId + ".json", JsonHelper.toJson(modelJson));
+                model.add("overrides", dynamicOverrides);
+                resource = new Resource(resource.getPack(), () -> IOUtils.toInputStream(JsonHelper.toJsonString(model), "UTF-8"));
+                DebugHelper.createDebugFile("models", armourId + ".json", JsonHelper.toJsonString(model));
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -2,6 +2,7 @@
   "required": true,
   "package": "io.github.andrew6rant.dynamictrim.mixin",
   "compatibilityLevel": "JAVA_17",
+  "plugin": "io.github.andrew6rant.dynamictrim.DynamicTrimMixinConfigPlugin",
   "mixins": [
     "SmithingTemplateItemMixin"
   ],

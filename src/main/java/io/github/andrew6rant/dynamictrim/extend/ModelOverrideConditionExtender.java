@@ -1,5 +1,5 @@
 package io.github.andrew6rant.dynamictrim.extend;
 
 public interface ModelOverrideConditionExtender {
-    String getPattern();
+    String dynamicTrim$getPattern();
 }

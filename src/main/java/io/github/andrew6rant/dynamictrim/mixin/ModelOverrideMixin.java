@@ -29,7 +29,7 @@ public abstract class ModelOverrideMixin {
         }
 
         @Override
-        public String getPattern() {
+        public String dynamicTrim$getPattern() {
             return pattern;
         }
     }
@@ -41,7 +41,7 @@ public abstract class ModelOverrideMixin {
             try {
                 return original.call(value, name);
             } catch (JsonSyntaxException e) {
-                if(!name.equals("dynamic-trim-pattern")) throw e;
+                if(!name.equals("trim_pattern")) throw e;
                 if(!value.isJsonPrimitive()) throw e;
 
                 JsonPrimitive primitive = value.getAsJsonPrimitive();

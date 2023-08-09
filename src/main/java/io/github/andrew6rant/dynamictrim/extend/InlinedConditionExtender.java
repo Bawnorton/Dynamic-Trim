@@ -1,5 +1,5 @@
 package io.github.andrew6rant.dynamictrim.extend;
 
 public interface InlinedConditionExtender {
-    String getPattern();
+    String dynamicTrim$getPattern();
 }

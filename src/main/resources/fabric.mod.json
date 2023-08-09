@@ -1,18 +1,19 @@
 {
 	"schemaVersion": 1,
-	"id": "dynamic-trim",
+	"id": "dynamictrim",
 	"version": "${version}",
 	"name": "Dynamic Trim",
 	"description": "Dynamically render Armor Trim patterns!",
 	"authors": [
-		"Andrew6rant (Andrew Grant)"
+		"Andrew6rant (Andrew Grant)",
+		"Bawnorton"
 	],
 	"contact": {
 		"homepage": "https://fabricmc.net/",
 		"sources": "https://github.com/FabricMC/fabric-example-mod"
 	},
 	"license": "MIT",
-	"icon": "assets/dynamic-trim/icon.png",
+	"icon": "assets/dynamictrim/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"client": [
@@ -20,9 +21,9 @@
 		]
 	},
 	"mixins": [
-		"dynamic-trim.mixins.json"
+		"dynamictrim.mixins.json"
 	],
-	"accessWidener": "dynamic-trim.accesswidener",
+	"accessWidener": "dynamictrim.accesswidener",
 	"depends": {
 		"fabricloader": ">=0.14.21",
 		"minecraft": "~1.20",

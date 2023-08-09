@@ -12,7 +12,7 @@ public abstract class JsonHelper {
         return GSON.fromJson(reader, clazz);
     }
 
-    public static String toJson(Object object) {
+    public static String toJsonString(Object object) {
         return GSON.toJson(object);
     }
 }
