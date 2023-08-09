@@ -45,6 +45,16 @@
         "trims/items/leggings_trim_minecraft-eye",
         "trims/items/boots_trim_minecraft-eye",
 
+        "trims/items/helmet_trim_minecraft-host",
+        "trims/items/chestplate_trim_minecraft-host",
+        "trims/items/leggings_trim_minecraft-host",
+        "trims/items/boots_trim_minecraft-host",
+
+        "trims/items/helmet_trim_minecraft-raiser",
+        "trims/items/chestplate_trim_minecraft-raiser",
+        "trims/items/leggings_trim_minecraft-raiser",
+        "trims/items/boots_trim_minecraft-raiser",
+
         "trims/items/helmet_trim_minecraft-rib",
         "trims/items/chestplate_trim_minecraft-rib",
         "trims/items/leggings_trim_minecraft-rib",
@@ -54,6 +64,16 @@
         "trims/items/chestplate_trim_minecraft-sentry",
         "trims/items/leggings_trim_minecraft-sentry",
         "trims/items/boots_trim_minecraft-sentry",
+
+        "trims/items/helmet_trim_minecraft-shaper",
+        "trims/items/chestplate_trim_minecraft-shaper",
+        "trims/items/leggings_trim_minecraft-shaper",
+        "trims/items/boots_trim_minecraft-shaper",
+
+        "trims/items/helmet_trim_minecraft-silence",
+        "trims/items/chestplate_trim_minecraft-silence",
+        "trims/items/leggings_trim_minecraft-silence",
+        "trims/items/boots_trim_minecraft-silence",
 
         "trims/items/helmet_trim_minecraft-snout",
         "trims/items/chestplate_trim_minecraft-snout",
@@ -79,6 +99,11 @@
         "trims/items/chestplate_trim_minecraft-ward",
         "trims/items/leggings_trim_minecraft-ward",
         "trims/items/boots_trim_minecraft-ward",
+
+        "trims/items/helmet_trim_minecraft-wayfinder",
+        "trims/items/chestplate_trim_minecraft-wayfinder",
+        "trims/items/leggings_trim_minecraft-wayfinder",
+        "trims/items/boots_trim_minecraft-wayfinder",
 
         "trims/items/helmet_trim_minecraft-wild",
         "trims/items/chestplate_trim_minecraft-wild",
