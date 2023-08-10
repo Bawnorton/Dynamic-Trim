@@ -5,6 +5,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import io.github.andrew6rant.dynamictrim.DynamicTrimClient;
+import io.github.andrew6rant.dynamictrim.compat.Compat;
 import io.github.andrew6rant.dynamictrim.extend.SmithingTemplateItemExtender;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
 import io.github.andrew6rant.dynamictrim.util.DebugHelper;
@@ -80,7 +81,28 @@ public abstract class BakedModelManagerMixin {
 
                     JsonObject overrideJson = override.getAsJsonObject();
                     String overrideModel = overrideJson.get("model").getAsString();
+                    if(overrideModel == null) {
+                        DynamicTrimClient.LOGGER.warn("Item " + armourId + "'s model override does not have a model parameter, skipping");
+                        continue;
+                    }
+
                     String material = StringUtils.substringBetween(overrideModel, baseTexture + "_", "_trim");
+                    if(material == null) {
+                        try {
+                            String modid = armourId.getNamespace();
+                            if(modid.equals("frostiful")) {
+                                String[] segments = overrideModel.split("/");
+                                material = segments[segments.length - 1];
+                            }
+                        } catch (Exception e) {
+                            DynamicTrimClient.LOGGER.debug("Can't parse frostiful override model " + overrideModel, e);
+                        }
+                        if(material == null) {
+                            DynamicTrimClient.LOGGER.debug("Can't find material for item " + armourId + "'s model override: " + overrideModel + ", skipping");
+                            continue;
+                        }
+                    }
+
                     JsonObject predicate = overrideJson.getAsJsonObject("predicate");
 
                     for(Identifier patternId: smithingTemplatePatternIds) {
@@ -113,13 +135,15 @@ public abstract class BakedModelManagerMixin {
                                 Identifier trimLayerTextureId = new Identifier(baseTexture).withPath("trims/items/%s_trim_%s_%s".formatted(
                                         armourType, pattern, material
                                 ));
-                                overrideTextures.addProperty("layer" + layer, trimLayerTextureId.toString());
+                                Identifier asMinecraft = new Identifier("minecraft", trimLayerTextureId.getPath());
+                                overrideTextures.addProperty("layer" + layer, asMinecraft.toString());
                             } else {
                                 for(int i = 0; i < 8; i++) {
                                     Identifier trimLayerTextureId = new Identifier(baseTexture).withPath("trims/items/%s_trim_%s_%s_%s".formatted(
                                             armourType, pattern, i, material
                                     ));
-                                    overrideTextures.addProperty("layer" + (layer + i), trimLayerTextureId.toString());
+                                    Identifier asMinecraft = new Identifier("minecraft", trimLayerTextureId.getPath());
+                                    overrideTextures.addProperty("layer" + (layer + i), asMinecraft.toString());
                                 }
                             }
                             break;

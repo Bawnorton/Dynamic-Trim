@@ -36,7 +36,7 @@ public abstract class ModelOverrideListMixin {
     }
 
     @ModifyExpressionValue(method = "apply", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/json/ModelOverrideList$BakedOverride;test([F)Z"))
-    private boolean matchCustomPredicate(boolean original, BakedModel model, ItemStack stack, ClientWorld world, LivingEntity entity, int seed, @Local(name = "bakedOverride") ModelOverrideList.BakedOverride bakedOverride, @Local(name = "fs") float[] fs) {
+    private boolean matchCustomPredicate(boolean original, BakedModel model, ItemStack stack, ClientWorld world, LivingEntity entity, int seed, @Local ModelOverrideList.BakedOverride bakedOverride, @Local float[] fs) {
         if(!(stack.getItem() instanceof ArmorItem)) return original;
         if (world == null) return original;
 
