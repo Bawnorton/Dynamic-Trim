@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "dynamictrim",
   "version": "${version}",
-  "name": "dynamictrim",
+  "name": "DynamicTrim",
   "description": "Dynamically render Armour Trim patterns!",
   "authors": [
     "Andrew6rant",

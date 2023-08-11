@@ -6,7 +6,7 @@ license = "MIT"
 [[mods]]
 modId = "dynamictrim"
 version = "${version}"
-displayName = "dynamictrim"
+displayName = "DynamicTrim"
 authors = "Andrew6rant, Bawnorton"
 description = '''
 Dynamically render Armor Trim patterns!
