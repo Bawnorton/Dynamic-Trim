@@ -30,6 +30,6 @@ side = "BOTH"
 [[dependencies.dynamictrim]]
 modId = "architectury"
 mandatory = true
-versionRange = "[9.1,)"
+versionRange = "[9.1.10,)"
 ordering = "AFTER"
 side = "BOTH"
