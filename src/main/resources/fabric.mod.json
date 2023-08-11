@@ -9,8 +9,7 @@
 		"Bawnorton"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/Andrew6rant/Dynamic-Trim"
 	},
 	"license": "MIT",
 	"icon": "assets/dynamictrim/icon.png",
