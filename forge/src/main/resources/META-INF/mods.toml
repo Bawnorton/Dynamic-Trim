@@ -1,0 +1,35 @@
+modLoader = "javafml"
+loaderVersion = "[41,)"
+issueTrackerURL = "https://github.com/Andrew6rant/Dynamic-Trim/issues"
+license = "MIT"
+
+[[mods]]
+modId = "dynamictrim"
+version = "${version}"
+displayName = "dynamictrim"
+authors = "Andrew6rant, Bawnorton"
+description = '''
+Dynamically render Armor Trim patterns!
+'''
+logoFile = "icon.png"
+
+[[dependencies.dynamictrim]]
+modId = "forge"
+mandatory = true
+versionRange = "[46,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.dynamictrim]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.dynamictrim]]
+modId = "architectury"
+mandatory = true
+versionRange = "[9.1,)"
+ordering = "AFTER"
+side = "BOTH"

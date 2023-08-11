@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "dynamictrim",
+  "version": "${version}",
+  "name": "dynamictrim",
+  "description": "Dynamically render Armour Trim patterns!",
+  "authors": [
+    "Andrew6rant",
+    "Bawnorton"
+  ],
+  "contact": {
+    "sources": "https://github.com/Andrew6rant/Dynamic-Trim",
+    "issues": "https://github.com/Andrew6rant/Dynamic-Trim/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/dynamictrim/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "client": [
+      "io.github.andrew6rant.dynamictrim.fabric.client.DynamicTrimFabricClient"
+    ]
+  },
+  "mixins": [
+    "dynamictrim.mixins.json",
+    "dynamictrim-common.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.21",
+    "minecraft": "~1.20",
+    "java": ">=17",
+    "fabric-api": "*",
+    "architectury": ">=9.1"
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}

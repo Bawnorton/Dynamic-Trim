@@ -1,0 +1,132 @@
+{
+  "sources": [
+    {
+      "type": "directory",
+      "source": "block",
+      "prefix": "block/"
+    },
+    {
+      "type": "directory",
+      "source": "item",
+      "prefix": "item/"
+    },
+    {
+      "type": "directory",
+      "source": "entity/conduit",
+      "prefix": "entity/conduit/"
+    },
+    {
+      "type": "single",
+      "resource": "entity/bell/bell_body"
+    },
+    {
+      "type": "single",
+      "resource": "entity/decorated_pot/decorated_pot_side"
+    },
+    {
+      "type": "single",
+      "resource": "entity/enchanting_table_book"
+    },
+    {
+      "type": "paletted_permutations",
+      "textures": [
+        "trims/items/helmet_trim_minecraft-coast",
+        "trims/items/chestplate_trim_minecraft-coast",
+        "trims/items/leggings_trim_minecraft-coast",
+        "trims/items/boots_trim_minecraft-coast",
+
+        "trims/items/helmet_trim_minecraft-dune",
+        "trims/items/chestplate_trim_minecraft-dune",
+        "trims/items/leggings_trim_minecraft-dune",
+        "trims/items/boots_trim_minecraft-dune",
+
+        "trims/items/helmet_trim_minecraft-eye",
+        "trims/items/chestplate_trim_minecraft-eye",
+        "trims/items/leggings_trim_minecraft-eye",
+        "trims/items/boots_trim_minecraft-eye",
+
+        "trims/items/helmet_trim_minecraft-host",
+        "trims/items/chestplate_trim_minecraft-host",
+        "trims/items/leggings_trim_minecraft-host",
+        "trims/items/boots_trim_minecraft-host",
+
+        "trims/items/helmet_trim_minecraft-raiser",
+        "trims/items/chestplate_trim_minecraft-raiser",
+        "trims/items/leggings_trim_minecraft-raiser",
+        "trims/items/boots_trim_minecraft-raiser",
+
+        "trims/items/helmet_trim_minecraft-rib",
+        "trims/items/chestplate_trim_minecraft-rib",
+        "trims/items/leggings_trim_minecraft-rib",
+        "trims/items/boots_trim_minecraft-rib",
+
+        "trims/items/helmet_trim_minecraft-sentry",
+        "trims/items/chestplate_trim_minecraft-sentry",
+        "trims/items/leggings_trim_minecraft-sentry",
+        "trims/items/boots_trim_minecraft-sentry",
+
+        "trims/items/helmet_trim_minecraft-shaper",
+        "trims/items/chestplate_trim_minecraft-shaper",
+        "trims/items/leggings_trim_minecraft-shaper",
+        "trims/items/boots_trim_minecraft-shaper",
+
+        "trims/items/helmet_trim_minecraft-silence",
+        "trims/items/chestplate_trim_minecraft-silence",
+        "trims/items/leggings_trim_minecraft-silence",
+        "trims/items/boots_trim_minecraft-silence",
+
+        "trims/items/helmet_trim_minecraft-snout",
+        "trims/items/chestplate_trim_minecraft-snout",
+        "trims/items/leggings_trim_minecraft-snout",
+        "trims/items/boots_trim_minecraft-snout",
+
+        "trims/items/helmet_trim_minecraft-spire",
+        "trims/items/chestplate_trim_minecraft-spire",
+        "trims/items/leggings_trim_minecraft-spire",
+        "trims/items/boots_trim_minecraft-spire",
+
+        "trims/items/helmet_trim_minecraft-tide",
+        "trims/items/chestplate_trim_minecraft-tide",
+        "trims/items/leggings_trim_minecraft-tide",
+        "trims/items/boots_trim_minecraft-tide",
+
+        "trims/items/helmet_trim_minecraft-vex",
+        "trims/items/chestplate_trim_minecraft-vex",
+        "trims/items/leggings_trim_minecraft-vex",
+        "trims/items/boots_trim_minecraft-vex",
+
+        "trims/items/helmet_trim_minecraft-ward",
+        "trims/items/chestplate_trim_minecraft-ward",
+        "trims/items/leggings_trim_minecraft-ward",
+        "trims/items/boots_trim_minecraft-ward",
+
+        "trims/items/helmet_trim_minecraft-wayfinder",
+        "trims/items/chestplate_trim_minecraft-wayfinder",
+        "trims/items/leggings_trim_minecraft-wayfinder",
+        "trims/items/boots_trim_minecraft-wayfinder",
+
+        "trims/items/helmet_trim_minecraft-wild",
+        "trims/items/chestplate_trim_minecraft-wild",
+        "trims/items/leggings_trim_minecraft-wild",
+        "trims/items/boots_trim_minecraft-wild"
+      ],
+      "palette_key": "trims/color_palettes/trim_palette",
+      "permutations": {
+        "quartz": "trims/color_palettes/quartz",
+        "iron": "trims/color_palettes/iron",
+        "gold": "trims/color_palettes/gold",
+        "diamond": "trims/color_palettes/diamond",
+        "netherite": "trims/color_palettes/netherite",
+        "redstone": "trims/color_palettes/redstone",
+        "copper": "trims/color_palettes/copper",
+        "emerald": "trims/color_palettes/emerald",
+        "lapis": "trims/color_palettes/lapis",
+        "amethyst": "trims/color_palettes/amethyst",
+        "iron_darker": "trims/color_palettes/iron_darker",
+        "gold_darker": "trims/color_palettes/gold_darker",
+        "diamond_darker": "trims/color_palettes/diamond_darker",
+        "netherite_darker": "trims/color_palettes/netherite_darker"
+      }
+    }
+  ]
+}
