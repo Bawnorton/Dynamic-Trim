@@ -108,7 +108,27 @@
         "trims/items/helmet_trim_minecraft-wild",
         "trims/items/chestplate_trim_minecraft-wild",
         "trims/items/leggings_trim_minecraft-wild",
-        "trims/items/boots_trim_minecraft-wild"
+        "trims/items/boots_trim_minecraft-wild",
+
+        "trims/items/helmet_trim_frostiful-frosty",
+        "trims/items/chestplate_trim_frostiful-frosty",
+        "trims/items/leggings_trim_frostiful-frosty",
+        "trims/items/boots_trim_frostiful-frosty",
+
+        "trims/items/helmet_trim_geode_plus-celeste",
+        "trims/items/chestplate_trim_geode_plus-celeste",
+        "trims/items/leggings_trim_geode_plus-celeste",
+        "trims/items/boots_trim_geode_plus-celeste",
+
+        "trims/items/helmet_trim_geode_plus-heart",
+        "trims/items/chestplate_trim_geode_plus-heart",
+        "trims/items/leggings_trim_geode_plus-heart",
+        "trims/items/boots_trim_geode_plus-heart",
+
+        "trims/items/helmet_trim_geode_plus-wrap",
+        "trims/items/chestplate_trim_geode_plus-wrap",
+        "trims/items/leggings_trim_geode_plus-wrap",
+        "trims/items/boots_trim_geode_plus-wrap"
       ],
       "palette_key": "trims/color_palettes/trim_palette",
       "permutations": {
