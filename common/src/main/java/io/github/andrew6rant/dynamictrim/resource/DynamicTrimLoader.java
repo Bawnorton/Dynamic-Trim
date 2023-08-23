@@ -9,11 +9,15 @@ import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Supplier;
 
 public class DynamicTrimLoader {
+    private static final Set<Supplier<Collection<TrimmableItem>>> CUSTOM = new HashSet<>();
+
+    public static void addCustom(Supplier<Collection<TrimmableItem>> item) {
+        CUSTOM.add(item);
+    }
     private static String getArmourType(ArmorItem value) {
         return switch (value.getSlotType()) {
             case HEAD -> "helmet";
@@ -23,20 +27,24 @@ public class DynamicTrimLoader {
             case MAINHAND, OFFHAND -> null;
         };
     }
+
     private static List<TrimmableItem> getArmourEntries() {
         List<TrimmableItem> entries = new ArrayList<>();
         Registries.ITEM.forEach(item -> {
-                    if (!(item instanceof ArmorItem armour)) return;
-                    Identifier id = Registries.ITEM.getId(item);
-                    if (id.getNamespace().equals("betterend")) return; // Better End dynamically generates models elsewhere. See bclib package - TODO
+            if (!(item instanceof ArmorItem armour)) return;
+            Identifier id = Registries.ITEM.getId(item);
+            if (id.getNamespace().equals("betterend"))
+                return; // Better End dynamically generates models elsewhere. See bclib package - TODO
 
-                    String armourType = getArmourType(armour);
-                    if (armourType != null) entries.add(new TrimmableItem(armourType, id));
-                });
+            String armourType = getArmourType(armour);
+            if (armourType != null) entries.add(new TrimmableItem(armourType, id));
+        });
         return entries;
     }
+
     public static void loadDynamicTrims(Map<Identifier, Resource> resourceMap) {
         List<TrimmableItem> trimmables = getArmourEntries();
+        CUSTOM.forEach(supplier -> trimmables.addAll(supplier.get()));
         for (TrimmableItem item : trimmables) {
             loadTrims(item, resourceMap);
         }
@@ -52,13 +60,13 @@ public class DynamicTrimLoader {
         }
 
         resourceMap.put(item.resourceId(), equipmentResource.createDynamicResource());
-        if(Platform.isDevelopmentEnvironment()) {
+        if (Platform.isDevelopmentEnvironment()) {
             final String modelString = equipmentResource.modelString();
             DebugHelper.createDebugFile("models", "%s.json".formatted(equipmentId), modelString);
         }
 
         equipmentResource.forEachOverride((override, material) -> {
-            for(Identifier patternId: TrimModelHelper.TEMPLATE_IDS) {
+            for (Identifier patternId : TrimModelHelper.TEMPLATE_IDS) {
                 OverrideResource overrideResource = equipmentResource.createOverrideResource(patternId, material);
                 resourceMap.put(overrideResource.modelId(), overrideResource.modelResource(equipmentResource.resource().getPack()));
                 if (Platform.isDevelopmentEnvironment()) {
