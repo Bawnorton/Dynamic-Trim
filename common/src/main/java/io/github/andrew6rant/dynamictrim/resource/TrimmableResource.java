@@ -12,19 +12,26 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.BiConsumer;
 
-public record EquipmentResource(TrimmableEquipment equipment, Resource resource, JsonObject model, JsonObject textures, String baseTexture, JsonArray overrides) {
+public record TrimmableResource(
+        TrimmableItem item,
+        Resource resource,
+        JsonObject model,
+        JsonObject textures,
+        String baseTexture,
+        JsonArray overrides
+) {
     public String modelString() {
         return JsonHelper.toJsonString(model);
     }
 
     public void forEachOverride(BiConsumer<JsonObject, String> overrideMaterialConsumer) {
         for(JsonElement override: overrides) {
-            if (!(override.isJsonObject())) continue;
+            if (!override.isJsonObject()) continue;
 
             JsonObject overrideJson = override.getAsJsonObject();
             String overrideModel = overrideJson.get("model").getAsString();
             if (overrideModel == null) {
-                DynamicTrimClient.LOGGER.debug("Item " + equipment.id() + "'s model override does not have a model parameter, skipping");
+                DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model override does not have a model parameter, skipping");
                 continue;
             }
 
@@ -40,7 +47,7 @@ public record EquipmentResource(TrimmableEquipment equipment, Resource resource,
         String material = StringUtils.substringBetween(overrideModel, baseTexture + "_", "_trim");
         if(material == null) {
             try {
-                String modid = equipment.id().getNamespace();
+                String modid = item.model().getNamespace();
                 if(modid.equals("frostiful")) {
                     String[] segments = overrideModel.split("/");
                     material = segments[segments.length - 1];
@@ -49,7 +56,7 @@ public record EquipmentResource(TrimmableEquipment equipment, Resource resource,
                 DynamicTrimClient.LOGGER.debug("Can't parse frostiful override model " + overrideModel, e);
             }
             if(material == null) {
-                DynamicTrimClient.LOGGER.debug("Can't find material for item " + equipment.id() + "'s model override: " + overrideModel + ", skipping");
+                DynamicTrimClient.LOGGER.debug("Can't find material for item " + item.model() + "'s model override: " + overrideModel + ", skipping");
                 return null;
             }
         }
@@ -97,14 +104,14 @@ public record EquipmentResource(TrimmableEquipment equipment, Resource resource,
 
             if(!material.equals("dynamic")) {
                 Identifier trimLayerTextureId = new Identifier(baseTexture()).withPath("trims/items/%s/%s_%s".formatted(
-                        equipment.armourType(), pattern, material
+                        item.type(), pattern, material
                 ));
                 Identifier asMinecraft = new Identifier("minecraft", trimLayerTextureId.getPath());
                 overrideTextures.addProperty("layer" + layer, asMinecraft.toString());
             } else {
                 for(int i = 0; i < 8; i++) {
                     Identifier trimLayerTextureId = new Identifier(baseTexture()).withPath("trims/items/%s/%s_%s_%s".formatted(
-                            equipment.armourType(),
+                            item.type(),
                             pattern,
                             i,
                             material
@@ -116,7 +123,7 @@ public record EquipmentResource(TrimmableEquipment equipment, Resource resource,
             break;
         }
 
-        Identifier overrideResourceModelId = new Identifier(equipment.id().getNamespace(), "models/%s/trims/%s/%s_trim.json".formatted(
+        Identifier overrideResourceModelId = new Identifier(item.model().getNamespace(), "models/%s/trims/%s/%s_trim.json".formatted(
                 new Identifier(baseTexture()).getPath(), pattern, material
         ));
         return new OverrideResource(overrideResourceModelId, modelOverrideJson);

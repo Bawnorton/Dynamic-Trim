@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import io.github.andrew6rant.dynamictrim.DynamicTrimClient;
 import io.github.andrew6rant.dynamictrim.extend.SmithingTemplateItemExtender;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
-import net.minecraft.item.Equipment;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
@@ -14,50 +13,39 @@ import java.io.BufferedReader;
 import java.util.*;
 
 public class TrimModelHelper {
-    public static final Set<TrimmableEquipment> TRIMMABLES = new HashSet<>();
     public static final List<Identifier> TEMPLATE_IDS = new ArrayList<>();
 
     static {
-        Registries.ITEM.stream()
-                .filter(item -> item instanceof Equipment)
-                .forEach(item -> {
-                    Equipment equipment = (Equipment) item;
-                    Identifier equipmentId = Registries.ITEM.getId(item);
-                    if(equipmentId.getNamespace().equals("betterend")) return; // Better End dynamically generates models elsewhere. See bclib package - TODO
-
-                    TRIMMABLES.add(new TrimmableEquipment(equipmentId, equipment));
-                });
         Registries.ITEM.stream()
                 .filter(item -> item instanceof SmithingTemplateItemExtender)
                 .map(item -> ((SmithingTemplateItemExtender) item).dynamicTrim$getPatternAssetId())
                 .filter(Objects::nonNull)
                 .forEach(TEMPLATE_IDS::add);
-        // you can inject here to add more items or patterns
     }
 
-    public static EquipmentResource buildResource(TrimmableEquipment equipment, Map<Identifier, Resource> lookupMap) {
-        Resource resource = getResource(equipment, lookupMap);
+    public static TrimmableResource buildResource(TrimmableItem item, Map<Identifier, Resource> lookupMap) {
+        Resource resource = getResource(item, lookupMap);
         if(resource == null) return null;
 
         JsonObject model = getModel(resource);
         if(model == null) return null;
 
-        JsonObject textures = getTextures(model, equipment);
+        JsonObject textures = getTextures(model, item);
         if(textures == null) return null;
 
-        String baseTexture = getBaseTexture(textures, equipment);
+        String baseTexture = getBaseTexture(textures, item);
         if(baseTexture == null) return null;
 
-        JsonArray overrides = getOverrides(model, equipment);
+        JsonArray overrides = getOverrides(model, item);
         if(overrides == null) return null;
 
-        return new EquipmentResource(equipment, resource, model, textures, baseTexture, overrides);
+        return new TrimmableResource(item, resource, model, textures, baseTexture, overrides);
     }
 
-    private static Resource getResource(TrimmableEquipment equipment, Map<Identifier, Resource> lookupMap) {
-        Resource resource = lookupMap.get(equipment.resourceId());
+    private static Resource getResource(TrimmableItem item, Map<Identifier, Resource> lookupMap) {
+        Resource resource = lookupMap.get(item.resourceId());
         if(resource == null) {
-            DynamicTrimClient.LOGGER.debug("Could not find resource " + equipment.resourceId() + " for item " + equipment.id() + ", skipping");
+            DynamicTrimClient.LOGGER.debug("Could not find resource " + item.resourceId() + " for item " + item.model() + ", skipping");
             return null;
         }
         return resource;
@@ -72,26 +60,26 @@ public class TrimModelHelper {
         }
     }
 
-    private static JsonObject getTextures(JsonObject model, TrimmableEquipment equipment) {
+    private static JsonObject getTextures(JsonObject model, TrimmableItem item) {
         if(!model.has("textures")) {
-            DynamicTrimClient.LOGGER.debug("Item " + equipment.id() + "'s model does not have a textures parameter, skipping");
+            DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model does not have a textures parameter, skipping");
             return null;
         }
         return model.get("textures").getAsJsonObject();
     }
 
-    private static String getBaseTexture(JsonObject textures, TrimmableEquipment equipment) {
+    private static String getBaseTexture(JsonObject textures, TrimmableItem item) {
         if (!textures.has("layer0")) {
-            DynamicTrimClient.LOGGER.debug("Item " + equipment.id() + "'s model does not have a layer0 texture, skipping");
+            DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model does not have a layer0 texture, skipping");
             return null;
         }
 
         return textures.get("layer0").getAsString();
     }
 
-    private static JsonArray getOverrides(JsonObject model, TrimmableEquipment equipment) {
+    private static JsonArray getOverrides(JsonObject model, TrimmableItem item) {
         if (!model.has("overrides")) {
-            DynamicTrimClient.LOGGER.debug("Item " + equipment.id() + "'s model does not have an overrides parameter, skipping");
+            DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model does not have an overrides parameter, skipping");
             return null;
         }
         return model.get("overrides").getAsJsonArray();
