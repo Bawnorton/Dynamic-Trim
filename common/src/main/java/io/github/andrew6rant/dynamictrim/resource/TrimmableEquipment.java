@@ -1,4 +1,4 @@
-package io.github.andrew6rant.dynamictrim.util;
+package io.github.andrew6rant.dynamictrim.resource;
 
 import net.minecraft.item.Equipment;
 import net.minecraft.util.Identifier;

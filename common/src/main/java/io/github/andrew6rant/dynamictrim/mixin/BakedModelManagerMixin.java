@@ -1,16 +1,17 @@
 package io.github.andrew6rant.dynamictrim.mixin;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import dev.architectury.platform.Platform;
 import io.github.andrew6rant.dynamictrim.DynamicTrimClient;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
+import io.github.andrew6rant.dynamictrim.resource.EquipmentResource;
+import io.github.andrew6rant.dynamictrim.resource.OverrideResource;
+import io.github.andrew6rant.dynamictrim.resource.TrimModelHelper;
+import io.github.andrew6rant.dynamictrim.resource.TrimmableEquipment;
 import io.github.andrew6rant.dynamictrim.util.*;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
-import org.apache.commons.io.IOUtils;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
