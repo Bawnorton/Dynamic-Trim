@@ -1,34 +1,6 @@
 {
-  "sources": [
-    {
-      "type": "directory",
-      "source": "block",
-      "prefix": "block/"
-    },
-    {
-      "type": "directory",
-      "source": "item",
-      "prefix": "item/"
-    },
-    {
-      "type": "directory",
-      "source": "entity/conduit",
-      "prefix": "entity/conduit/"
-    },
-    {
-      "type": "single",
-      "resource": "entity/bell/bell_body"
-    },
-    {
-      "type": "single",
-      "resource": "entity/decorated_pot/decorated_pot_side"
-    },
-    {
-      "type": "single",
-      "resource": "entity/enchanting_table_book"
-    },
-    {
-      "type": "paletted_permutations",
+  "sources": [{
+      "type": "group_permutations",
       "textures": [
         "trims/items/helmet/minecraft-coast",
         "trims/items/chestplate/minecraft-coast",
