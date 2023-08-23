@@ -71,8 +71,8 @@ public record TrimmableResource(
             for (Identifier patternId : TrimModelHelper.TEMPLATE_IDS) {
                 String pattern = patternId.toString().replace(":", "-");
                 JsonObject dynamicOverride = new JsonObject();
-                dynamicOverride.addProperty("model", "%s/trims/%s/%s_trim".formatted(
-                        baseTextureId().getPath(), pattern, material
+                dynamicOverride.addProperty("model", "%s:%s/trims/%s/%s_trim".formatted(
+                        baseTextureId().getNamespace(), baseTextureId().getPath(), pattern, material
                 ));
                 JsonObject dynamicPredicate = predicate.deepCopy();
                 dynamicPredicate.addProperty("trim_pattern", pattern);
