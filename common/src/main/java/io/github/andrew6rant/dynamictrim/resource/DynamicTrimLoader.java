@@ -43,7 +43,7 @@ public class DynamicTrimLoader {
     }
 
     private static void loadTrims(TrimmableItem item, Map<Identifier, Resource> resourceMap) {
-        Identifier equipmentId = item.model();
+        Identifier equipmentId = item.id();
 
         TrimmableResource equipmentResource = TrimModelHelper.buildResource(item, resourceMap);
         if (equipmentResource == null) {

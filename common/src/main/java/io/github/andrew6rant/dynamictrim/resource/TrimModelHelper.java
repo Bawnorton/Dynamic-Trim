@@ -45,7 +45,7 @@ public class TrimModelHelper {
     private static Resource getResource(TrimmableItem item, Map<Identifier, Resource> lookupMap) {
         Resource resource = lookupMap.get(item.resourceId());
         if(resource == null) {
-            DynamicTrimClient.LOGGER.debug("Could not find resource " + item.resourceId() + " for item " + item.model() + ", skipping");
+            DynamicTrimClient.LOGGER.debug("Could not find resource " + item.resourceId() + " for item " + item.id() + ", skipping");
             return null;
         }
         return resource;
@@ -62,7 +62,7 @@ public class TrimModelHelper {
 
     private static JsonObject getTextures(JsonObject model, TrimmableItem item) {
         if(!model.has("textures")) {
-            DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model does not have a textures parameter, skipping");
+            DynamicTrimClient.LOGGER.debug("Item " + item.id() + "'s model does not have a textures parameter, skipping");
             return null;
         }
         return model.get("textures").getAsJsonObject();
@@ -70,7 +70,7 @@ public class TrimModelHelper {
 
     private static String getBaseTexture(JsonObject textures, TrimmableItem item) {
         if (!textures.has("layer0")) {
-            DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model does not have a layer0 texture, skipping");
+            DynamicTrimClient.LOGGER.debug("Item " + item.id() + "'s model does not have a layer0 texture, skipping");
             return null;
         }
 
@@ -79,7 +79,7 @@ public class TrimModelHelper {
 
     private static JsonArray getOverrides(JsonObject model, TrimmableItem item) {
         if (!model.has("overrides")) {
-            DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model does not have an overrides parameter, skipping");
+            DynamicTrimClient.LOGGER.debug("Item " + item.id() + "'s model does not have an overrides parameter, skipping");
             return null;
         }
         return model.get("overrides").getAsJsonArray();

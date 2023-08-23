@@ -31,7 +31,7 @@ public record TrimmableResource(
             JsonObject overrideJson = override.getAsJsonObject();
             String overrideModel = overrideJson.get("model").getAsString();
             if (overrideModel == null) {
-                DynamicTrimClient.LOGGER.debug("Item " + item.model() + "'s model override does not have a model parameter, skipping");
+                DynamicTrimClient.LOGGER.debug("Item " + item.id() + "'s model override does not have a model parameter, skipping");
                 continue;
             }
 
@@ -47,7 +47,7 @@ public record TrimmableResource(
         String material = StringUtils.substringBetween(overrideModel, baseTexture + "_", "_trim");
         if(material == null) {
             try {
-                String modid = item.model().getNamespace();
+                String modid = item.id().getNamespace();
                 if(modid.equals("frostiful")) {
                     String[] segments = overrideModel.split("/");
                     material = segments[segments.length - 1];
@@ -56,7 +56,7 @@ public record TrimmableResource(
                 DynamicTrimClient.LOGGER.debug("Can't parse frostiful override model " + overrideModel, e);
             }
             if(material == null) {
-                DynamicTrimClient.LOGGER.debug("Can't find material for item " + item.model() + "'s model override: " + overrideModel + ", skipping");
+                DynamicTrimClient.LOGGER.debug("Can't find material for item " + item.id() + "'s model override: " + overrideModel + ", skipping");
                 return null;
             }
         }
@@ -123,7 +123,7 @@ public record TrimmableResource(
             break;
         }
 
-        Identifier overrideResourceModelId = new Identifier(item.model().getNamespace(), "models/%s/trims/%s/%s_trim.json".formatted(
+        Identifier overrideResourceModelId = new Identifier(item.id().getNamespace(), "models/%s/trims/%s/%s_trim.json".formatted(
                 new Identifier(baseTexture()).getPath(), pattern, material
         ));
         return new OverrideResource(overrideResourceModelId, modelOverrideJson);
