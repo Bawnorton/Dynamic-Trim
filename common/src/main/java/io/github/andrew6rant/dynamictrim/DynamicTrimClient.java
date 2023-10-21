@@ -1,7 +1,7 @@
 package io.github.andrew6rant.dynamictrim;
 
+import io.github.andrew6rant.dynamictrim.resource.GroupPermutationsAtlasSource;
 import io.github.andrew6rant.dynamictrim.util.LogWrapper;
-import net.minecraft.client.gui.screen.Screen;
 import org.slf4j.LoggerFactory;
 
 public class DynamicTrimClient {
@@ -11,5 +11,6 @@ public class DynamicTrimClient {
 
     public static void init() {
         LOGGER.info("Initializing Dynamic Trim Client");
+        GroupPermutationsAtlasSource.bootstrap();
     }
 }

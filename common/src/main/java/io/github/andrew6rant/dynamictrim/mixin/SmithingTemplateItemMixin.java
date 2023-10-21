@@ -36,7 +36,7 @@ public abstract class SmithingTemplateItemMixin extends Item implements Smithing
     }
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(Text appliesToText, Text ingredientsText, Text titleText, Text baseSlotDescriptionText, Text additionsSlotDescriptionText, List emptyBaseSlotTextures, List emptyAdditionsSlotTextures, CallbackInfo ci) {
+    private void onInit(Text appliesToText, Text ingredientsText, Text titleText, Text baseSlotDescriptionText, Text additionsSlotDescriptionText, List<Identifier> emptyBaseSlotTextures, List<Identifier> emptyAdditionsSlotTextures, CallbackInfo ci) {
         dynamicTrims$assetId = ThreadedLocals.ASSET_ID.get();
         ThreadedLocals.ASSET_ID.remove();
     }

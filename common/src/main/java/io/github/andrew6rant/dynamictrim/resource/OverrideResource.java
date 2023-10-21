@@ -1,4 +1,4 @@
-package io.github.andrew6rant.dynamictrim.util;
+package io.github.andrew6rant.dynamictrim.resource;
 
 import com.google.gson.JsonObject;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
