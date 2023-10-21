@@ -12,14 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.function.BiConsumer;
 
-public record TrimmableResource(
-        TrimmableItem item,
-        Resource resource,
-        JsonObject model,
-        JsonObject textures,
-        String baseTexture,
-        JsonArray overrides
-) {
+public record TrimmableResource(TrimmableItem item, Resource resource, JsonObject model, JsonObject textures, String baseTexture, JsonArray overrides) {
     public String modelString() {
         return JsonHelper.toJsonString(model);
     }
@@ -91,7 +84,7 @@ public record TrimmableResource(
         modelOverrideJson.addProperty("parent", model().get("parent").getAsString());
         JsonObject overrideTextures = new JsonObject();
         modelOverrideJson.add("textures", overrideTextures);
-        overrideTextures.addProperty("layer0", baseTexture());
+        overrideTextures.addProperty("layer0", baseTexture);
 
         int layer = 0;
         while(true) {
@@ -103,7 +96,7 @@ public record TrimmableResource(
             }
 
             if(!material.equals("dynamic")) {
-                Identifier trimLayerTextureId = new Identifier(baseTexture()).withPath("trims/items/%s/%s_%s".formatted(
+                Identifier trimLayerTextureId = new Identifier(baseTexture).withPath("trims/items/%s/%s_%s".formatted(
                         item.type(), pattern, material
                 ));
                 Identifier asMinecraft = new Identifier("minecraft", trimLayerTextureId.getPath());
@@ -124,12 +117,12 @@ public record TrimmableResource(
         }
 
         Identifier overrideResourceModelId = new Identifier(item.id().getNamespace(), "models/%s/trims/%s/%s_trim.json".formatted(
-                new Identifier(baseTexture()).getPath(), pattern, material
+                new Identifier(baseTexture).getPath(), pattern, material
         ));
         return new OverrideResource(overrideResourceModelId, modelOverrideJson);
     }
 
     public Identifier baseTextureId() {
-        return new Identifier(baseTexture());
+        return new Identifier(baseTexture);
     }
 }

@@ -7,7 +7,6 @@ import io.github.andrew6rant.dynamictrim.compat.allthetrims.AllTheTrimsCompat;
 import io.github.andrew6rant.dynamictrim.extend.InlinedConditionExtender;
 import io.github.andrew6rant.dynamictrim.extend.ModelOverrideConditionExtender;
 import io.github.andrew6rant.dynamictrim.mixin.accessor.BakedOverrideAccessor;
-import io.github.andrew6rant.dynamictrim.mixin.accessor.InlinedConditionAccessor;
 import io.github.andrew6rant.dynamictrim.util.ThreadedLocals;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.render.model.BakedModel;
@@ -28,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
-@SuppressWarnings("unused")
 @Mixin(ModelOverrideList.class)
 public abstract class ModelOverrideListMixin {
     @Inject(method = "method_33696", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/model/json/ModelOverrideList$InlinedCondition;<init>(IF)V"))
@@ -51,13 +49,15 @@ public abstract class ModelOverrideListMixin {
         String patternString = assetId.toString().replace(':', '-');
 
         ModelOverrideList.InlinedCondition[] conditions = ((BakedOverrideAccessor) bakedOverride).getConditions();
+        if(Compat.isAllTheTrimsLoaded()) {
+            return AllTheTrimsCompat.matchCustomPredicate(conditions, fs, trim);
+        }
         for (ModelOverrideList.InlinedCondition condition : conditions) {
-            if (!(condition instanceof InlinedConditionExtender extender && condition instanceof InlinedConditionAccessor accessor)) continue;
-            if (!Compat.isAllTheTrimsLoaded() && fs[accessor.getIndex()] < accessor.getThreshold()) continue;
+            if (!(condition instanceof InlinedConditionExtender extender)) continue;
+            if (fs[condition.index] < condition.threshold) continue;
 
             String conditionPattern = extender.dynamicTrim$getPattern();
             if (conditionPattern == null || !conditionPattern.equals(patternString)) continue;
-            if(Compat.isAllTheTrimsLoaded() && !AllTheTrimsCompat.matchCustomPredicate(condition, trim)) continue;
 
             return true;
         }

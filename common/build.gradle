@@ -17,7 +17,7 @@ dependencies {
     implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:${rootProject.mixin_extras_version}"))
 
     // compats
-    modCompileOnly("maven.modrinth:allthetrims:${project.allthetrims_version}")
+    modCompileOnly("maven.modrinth:allthetrims:${rootProject.allthetrims_version}")
 }
 
 publishing {

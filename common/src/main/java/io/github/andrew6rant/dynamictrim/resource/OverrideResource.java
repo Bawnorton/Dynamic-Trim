@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.io.IOUtils;
 
 public record OverrideResource(Identifier modelId, JsonObject modelResourceJson) {
-    public Resource modelResource(ResourcePack pack) {
+    public Resource toResource(ResourcePack pack) {
         return new Resource(pack, () -> IOUtils.toInputStream(JsonHelper.toJsonString(modelResourceJson), "UTF-8"));
     }
 }

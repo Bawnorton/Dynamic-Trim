@@ -68,7 +68,7 @@ public class DynamicTrimLoader {
         equipmentResource.forEachOverride((override, material) -> {
             for (Identifier patternId : TrimModelHelper.TEMPLATE_IDS) {
                 OverrideResource overrideResource = equipmentResource.createOverrideResource(patternId, material);
-                resourceMap.put(overrideResource.modelId(), overrideResource.modelResource(equipmentResource.resource().getPack()));
+                resourceMap.put(overrideResource.modelId(), overrideResource.toResource(equipmentResource.resource().getPack()));
                 if (Platform.isDevelopmentEnvironment()) {
                     DebugHelper.createDebugFile("models", "models/%s/trims/%s/%s_trim.json".formatted(
                             equipmentResource.baseTextureId().getPath(),

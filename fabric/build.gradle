@@ -29,6 +29,7 @@ dependencies {
     include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:${rootProject.mixin_extras_version}")))
 
     // compats
+    modCompileOnly("maven.modrinth:allthetrims:${rootProject.allthetrims_version}")
     modCompileOnly("maven.modrinth:betterend:${project.betterend_version}")
     modCompileOnly("com.github.quiqueck:BCLib:${project.bclib_version}") { transitive false }
     modCompileOnly(fileTree(dir: "libs", include: ["*.jar"])) // wunderlib 1.1.3 with mapping conflict resolved

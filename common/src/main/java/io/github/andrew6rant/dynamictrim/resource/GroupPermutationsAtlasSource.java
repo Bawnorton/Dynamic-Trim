@@ -2,6 +2,8 @@ package io.github.andrew6rant.dynamictrim.resource;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.github.andrew6rant.dynamictrim.Compat;
+import io.github.andrew6rant.dynamictrim.compat.allthetrims.AllTheTrimsCompat;
 import io.github.andrew6rant.dynamictrim.mixin.accessor.PalettedPermutationsAtlasSourceAccessor;
 import io.github.andrew6rant.dynamictrim.mixin.invoker.AtlasSourceManagerInvoker;
 import net.minecraft.client.texture.atlas.AtlasSourceType;
@@ -36,19 +38,28 @@ public class GroupPermutationsAtlasSource extends PalettedPermutationsAtlasSourc
     }
 
     private GroupPermutationsAtlasSource(List<Identifier> directories, Identifier paletteKey, Map<String, Identifier> permutations) {
-        super(new ArrayList<>(directories), paletteKey, permutations);
+        super(new ArrayList<>(directories), paletteKey, evaluatePermutations(permutations));
+    }
+
+    private static Map<String, Identifier> evaluatePermutations(Map<String, Identifier> permutations) {
+        if(Compat.isAllTheTrimsLoaded()) return AllTheTrimsCompat.withBlankPermutation(permutations);
+        return permutations;
     }
 
     @Override
     public void load(ResourceManager resourceManager, SpriteRegions regions) {
         List<Identifier> combinedTextures = new ArrayList<>();
-        for (Identifier dir : ((PalettedPermutationsAtlasSourceAccessor) this).getTextures()) {
+        List<Identifier> originalTextures = ((PalettedPermutationsAtlasSourceAccessor) this).getTextures();
+        for (Identifier dir : originalTextures) {
             ResourceFinder resourceFinder = new ResourceFinder("textures/" + dir.getPath(), ".png");
             resourceFinder.findResources(resourceManager).forEach((identifier, resource) ->
                     combinedTextures.add(resourceFinder.toResourceId(identifier).withPrefixedPath(dir.getPath() + "/")));
         }
-        ((PalettedPermutationsAtlasSourceAccessor) this).getTextures().clear();
-        ((PalettedPermutationsAtlasSourceAccessor) this).getTextures().addAll(combinedTextures);
+        originalTextures.clear();
+        originalTextures.addAll(combinedTextures);
+        if(Compat.isAllTheTrimsLoaded()) {
+            AllTheTrimsCompat.generateAdditionalLayers(originalTextures);
+        }
         super.load(resourceManager, regions);
     }
 
