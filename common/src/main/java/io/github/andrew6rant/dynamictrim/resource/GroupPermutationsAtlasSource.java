@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.andrew6rant.dynamictrim.Compat;
 import io.github.andrew6rant.dynamictrim.compat.allthetrims.AllTheTrimsCompat;
 import io.github.andrew6rant.dynamictrim.mixin.accessor.PalettedPermutationsAtlasSourceAccessor;
-import io.github.andrew6rant.dynamictrim.mixin.invoker.AtlasSourceManagerInvoker;
 import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.client.texture.atlas.PalettedPermutationsAtlasSource;
 import net.minecraft.resource.ResourceFinder;
@@ -31,7 +30,7 @@ public class GroupPermutationsAtlasSource extends PalettedPermutationsAtlasSourc
                     )
                     .apply(instance, GroupPermutationsAtlasSource::new)
     );
-    private static final AtlasSourceType TYPE = AtlasSourceManagerInvoker.invokeRegister("group_permutations", CODEC);
+    public static AtlasSourceType TYPE;
 
     public static void bootstrap() {
         // no-op

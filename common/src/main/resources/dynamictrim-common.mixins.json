@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "plugin": "io.github.andrew6rant.dynamictrim.DynamicTrimMixinConfigPlugin",
   "client": [
+    "AtlasSourceManagerMixin",
     "BakedModelManagerMixin",
     "ModelOverrideListMixin",
     "ModelOverrideListMixin$InlinedConditionMixin",
@@ -13,11 +14,10 @@
     "ModelOverrideMixin$DeserializerMixin",
     "accessor.BakedOverrideAccessor",
     "accessor.PalettedPermutationsAtlasSourceAccessor",
-    "invoker.AtlasSourceManagerInvoker"
+    "allthetrims.AllTheTrimsClientMixin"
   ],
   "mixins": [
-    "SmithingTemplateItemMixin",
-    "allthetrims.AllTheTrimsClientMixin"
+    "SmithingTemplateItemMixin"
   ],
   "injectors": {
     "defaultRequire": 1

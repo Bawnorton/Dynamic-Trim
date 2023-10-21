@@ -60,22 +60,17 @@ public class DynamicTrimLoader {
         }
 
         resourceMap.put(item.resourceId(), equipmentResource.createDynamicResource());
-        if (Platform.isDevelopmentEnvironment()) {
-            final String modelString = equipmentResource.modelString();
-            DebugHelper.createDebugFile("models", "%s.json".formatted(equipmentId), modelString);
-        }
+        DebugHelper.createDebugFile("models", "%s.json".formatted(equipmentId), equipmentResource.modelString());
 
         equipmentResource.forEachOverride((override, material) -> {
             for (Identifier patternId : TrimModelHelper.TEMPLATE_IDS) {
                 OverrideResource overrideResource = equipmentResource.createOverrideResource(patternId, material);
                 resourceMap.put(overrideResource.modelId(), overrideResource.toResource(equipmentResource.resource().getPack()));
-                if (Platform.isDevelopmentEnvironment()) {
-                    DebugHelper.createDebugFile("models", "models/%s/trims/%s/%s_trim.json".formatted(
-                            equipmentResource.baseTextureId().getPath(),
-                            patternId.toString().replace(":", "-"),
-                            material
-                    ), JsonHelper.toJsonString(overrideResource.modelResourceJson()));
-                }
+                DebugHelper.createDebugFile("models", "models/%s/trims/%s/%s_trim.json".formatted(
+                        equipmentResource.baseTextureId().getPath(),
+                        patternId.toString().replace(":", "-"),
+                        material
+                ), JsonHelper.toJsonString(overrideResource.modelResourceJson()));
             }
         });
     }
