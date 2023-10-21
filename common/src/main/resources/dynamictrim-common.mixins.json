@@ -12,7 +12,9 @@
     "ModelOverrideMixin$ConditionMixin",
     "ModelOverrideMixin$DeserializerMixin",
     "accessor.BakedOverrideAccessor",
-    "accessor.InlinedConditionAccessor"
+    "accessor.InlinedConditionAccessor",
+    "accessor.PalettedPermutationsAtlasSourceAccessor",
+    "invoker.AtlasSourceManagerInvoker"
   ],
   "mixins": [
     "SmithingTemplateItemMixin"
