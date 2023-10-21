@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 public abstract class DebugHelper {
     public static void createDebugFile(String directory, String filename, String content) {
-//        if(!Platform.isDevelopmentEnvironment()) return;
+        if(!Platform.isDevelopmentEnvironment()) return;
         try {
             Path gameDir = Platform.getGameFolder();
             File debugDir = gameDir.resolve("dynamic-trim-debug").resolve(directory).toFile();
