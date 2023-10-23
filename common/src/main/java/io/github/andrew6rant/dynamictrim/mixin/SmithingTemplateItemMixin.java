@@ -4,8 +4,6 @@ import io.github.andrew6rant.dynamictrim.extend.SmithingTemplateItemExtender;
 import io.github.andrew6rant.dynamictrim.util.ThreadedLocals;
 import net.minecraft.item.Item;
 import net.minecraft.item.SmithingTemplateItem;
-import net.minecraft.item.trim.ArmorTrimPattern;
-import net.minecraft.registry.RegistryKey;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,9 +27,9 @@ public abstract class SmithingTemplateItemMixin extends Item implements Smithing
     @Unique
     private Identifier dynamicTrims$assetId;
 
-    @ModifyVariable(method = "of(Lnet/minecraft/registry/RegistryKey;)Lnet/minecraft/item/SmithingTemplateItem;", at = @At("LOAD"), argsOnly = true)
-    private static RegistryKey<ArmorTrimPattern> capturePattern(RegistryKey<ArmorTrimPattern> value) {
-        ThreadedLocals.ASSET_ID.set(value.getValue());
+    @ModifyVariable(method = "of(Lnet/minecraft/util/Identifier;)Lnet/minecraft/item/SmithingTemplateItem;", at = @At("LOAD"), argsOnly = true)
+    private static Identifier capturePattern(Identifier value) {
+        ThreadedLocals.ASSET_ID.set(value);
         return value;
     }
 
