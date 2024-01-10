@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "plugin": "io.github.andrew6rant.dynamictrim.DynamicTrimMixinConfigPlugin",
   "client": [
+    "AtlasLoaderMixin",
     "AtlasSourceManagerMixin",
     "BakedModelManagerMixin",
     "ModelOverrideListMixin",

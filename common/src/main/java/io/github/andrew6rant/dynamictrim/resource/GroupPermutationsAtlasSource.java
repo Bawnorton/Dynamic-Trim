@@ -21,14 +21,16 @@ import java.util.Map;
 // Also improves mod compatibility. If Dynamic trim is not installed, atlas loader will ignore all "group_permutations" sources, avoiding creating unnecessary textures.
 public class GroupPermutationsAtlasSource extends PalettedPermutationsAtlasSource {
     public static final Codec<GroupPermutationsAtlasSource> CODEC = RecordCodecBuilder.create(
-            instance -> instance.group(
-                            Codec.list(Identifier.CODEC).fieldOf("directories").forGetter(source -> ((PalettedPermutationsAtlasSourceAccessor) source).getTextures()),
-                            Identifier.CODEC.fieldOf("palette_key").forGetter(source -> ((PalettedPermutationsAtlasSourceAccessor) source).getPaletteKey()),
-                            Codec.unboundedMap(Codec.STRING, Identifier.CODEC)
-                                    .fieldOf("permutations")
-                                    .forGetter(source -> ((PalettedPermutationsAtlasSourceAccessor) source).getPermutations())
-                    )
-                    .apply(instance, GroupPermutationsAtlasSource::new)
+            instance -> instance.group(Codec.list(Identifier.CODEC)
+                                            .fieldOf("directories")
+                                            .forGetter(source -> ((PalettedPermutationsAtlasSourceAccessor) source).getTextures()),
+                                        Identifier.CODEC.fieldOf("palette_key")
+                                                        .forGetter(source -> ((PalettedPermutationsAtlasSourceAccessor) source).getPaletteKey()),
+                                        Codec.unboundedMap(Codec.STRING, Identifier.CODEC)
+                                             .fieldOf("permutations")
+                                             .forGetter(source -> ((PalettedPermutationsAtlasSourceAccessor) source).getPermutations())
+                                )
+                                .apply(instance, GroupPermutationsAtlasSource::new)
     );
     public static AtlasSourceType TYPE;
 
@@ -41,7 +43,7 @@ public class GroupPermutationsAtlasSource extends PalettedPermutationsAtlasSourc
     }
 
     private static Map<String, Identifier> evaluatePermutations(Map<String, Identifier> permutations) {
-        if(Compat.isAllTheTrimsLoaded()) return AllTheTrimsCompat.withBlankPermutation(permutations);
+        if (Compat.isAllTheTrimsLoaded()) return AllTheTrimsCompat.withBlankPermutation(permutations);
         return permutations;
     }
 
@@ -52,11 +54,12 @@ public class GroupPermutationsAtlasSource extends PalettedPermutationsAtlasSourc
         for (Identifier dir : originalTextures) {
             ResourceFinder resourceFinder = new ResourceFinder("textures/" + dir.getPath(), ".png");
             resourceFinder.findResources(resourceManager).forEach((identifier, resource) ->
-                    combinedTextures.add(resourceFinder.toResourceId(identifier).withPrefixedPath(dir.getPath() + "/")));
+                    combinedTextures.add(resourceFinder.toResourceId(identifier)
+                                                       .withPrefixedPath(dir.getPath() + "/")));
         }
         originalTextures.clear();
         originalTextures.addAll(combinedTextures);
-        if(Compat.isAllTheTrimsLoaded()) {
+        if (Compat.isAllTheTrimsLoaded()) {
             AllTheTrimsCompat.generateAdditionalLayers(originalTextures);
         }
         super.load(resourceManager, regions);

@@ -16,7 +16,8 @@ import static io.github.andrew6rant.dynamictrim.resource.GroupPermutationsAtlasS
 
 @Mixin(AtlasSourceManager.class)
 public abstract class AtlasSourceManagerMixin {
-    @Shadow private static AtlasSourceType register(String id, Codec<? extends AtlasSource> codec) {
+    @Shadow
+    private static AtlasSourceType register(String id, Codec<? extends AtlasSource> codec) {
         throw new AssertionError();
     }
 

@@ -1,6 +1,5 @@
 package io.github.andrew6rant.dynamictrim.resource;
 
-import dev.architectury.platform.Platform;
 import io.github.andrew6rant.dynamictrim.DynamicTrimClient;
 import io.github.andrew6rant.dynamictrim.json.JsonHelper;
 import io.github.andrew6rant.dynamictrim.util.DebugHelper;
@@ -18,6 +17,7 @@ public class DynamicTrimLoader {
     public static void addCustom(Supplier<Collection<TrimmableItem>> item) {
         CUSTOM.add(item);
     }
+
     private static String getArmourType(ArmorItem value) {
         return switch (value.getSlotType()) {
             case HEAD -> "helmet";

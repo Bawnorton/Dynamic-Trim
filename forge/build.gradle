@@ -36,6 +36,8 @@ dependencies {
     // mixin extras
     implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:${rootProject.mixin_extras_version}"))
     implementation(include("com.github.llamalad7.mixinextras:mixinextras-forge:${rootProject.mixin_extras_version}"))
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${rootProject.mixin_squared_version}"))
+    implementation(include("com.github.bawnorton.mixinsquared:mixinsquared-forge:${rootProject.mixin_squared_version}"))
 
     modImplementation(fileTree(dir: "libs", include: ["*.jar"]))
     modImplementation("maven.modrinth:allthetrims:8XytcE1b")
@@ -57,18 +59,17 @@ shadowJar {
     exclude "architectury.common.json"
 
     configurations = [project.configurations.shadowCommon]
-    classifier "dev-shadow"
+    archiveClassifier = "dev-shadow"
 }
 
 remapJar {
     input.set shadowJar.archiveFile
     dependsOn shadowJar
-    classifier null
     archiveClassifier = "forge+${rootProject.minecraft_version}"
 }
 
 jar {
-    classifier "dev"
+    archiveClassifier = "dev"
 }
 
 sourcesJar {

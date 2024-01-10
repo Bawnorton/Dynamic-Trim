@@ -15,6 +15,7 @@ dependencies {
 
     // mixin extras
     implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:${rootProject.mixin_extras_version}"))
+    implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-common:${rootProject.mixin_squared_version}"))
 
     // compats
     modCompileOnly("maven.modrinth:allthetrims:${rootProject.allthetrims_version}")
