@@ -1,10 +1,13 @@
 ## Changelog
 
-## 1.3.2
-- Correct more armor trim texture names
+## 1.4.0
+- Add support for modded armour trim materials by dynamically generating a group_permutations atlas source
 
 <details>
 <summary>Older Versions</summary>
+
+## 1.3.2
+- Correct more armor trim texture names
 
 ## 1.3.1
 - Add support for more armor trims
