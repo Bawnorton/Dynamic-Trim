@@ -3,7 +3,7 @@ package io.github.andrew6rant.dynamictrim.resource;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.github.andrew6rant.dynamictrim.Compat;
-import io.github.andrew6rant.dynamictrim.compat.allthetrims.AllTheTrimsCompat;
+import io.github.andrew6rant.dynamictrim.compat.AllTheTrimsCompat;
 import io.github.andrew6rant.dynamictrim.mixin.accessor.PalettedPermutationsAtlasSourceAccessor;
 import net.minecraft.client.texture.atlas.AtlasSourceType;
 import net.minecraft.client.texture.atlas.PalettedPermutationsAtlasSource;

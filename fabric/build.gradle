@@ -31,10 +31,12 @@ dependencies {
     include(implementation(annotationProcessor("com.github.bawnorton.mixinsquared:mixinsquared-fabric:${rootProject.mixin_squared_version}")))
 
     // compats
-    modCompileOnly("maven.modrinth:allthetrims:${rootProject.allthetrims_version}")
     modCompileOnly("maven.modrinth:betterend:${project.betterend_version}")
     modCompileOnly("maven.modrinth:BCLib:${project.bclib_version}") { transitive false }
     modCompileOnly(fileTree(dir: "libs", include: ["*.jar"])) // wunderlib 1.1.3 with mapping conflict resolved
+
+    modImplementation("maven.modrinth:allthetrims:${rootProject.allthetrims_version}")
+    modImplementation("maven.modrinth:modernfix:${rootProject.modernfix_version}")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionFabric")) { transitive false }

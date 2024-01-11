@@ -1,4 +1,4 @@
-package io.github.andrew6rant.dynamictrim.compat.allthetrims;
+package io.github.andrew6rant.dynamictrim.compat;
 
 import com.bawnorton.allthetrims.AllTheTrims;
 import com.bawnorton.allthetrims.client.extend.InlinedConditionExtender;

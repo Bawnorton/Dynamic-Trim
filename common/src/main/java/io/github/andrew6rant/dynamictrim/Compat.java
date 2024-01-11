@@ -7,4 +7,9 @@ public abstract class Compat {
     public static boolean isAllTheTrimsLoaded() {
         throw new AssertionError();
     }
+
+    @ExpectPlatform
+    public static boolean isModernFixLoaded() {
+        throw new AssertionError();
+    }
 }

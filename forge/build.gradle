@@ -41,6 +41,7 @@ dependencies {
 
     modImplementation(fileTree(dir: "libs", include: ["*.jar"]))
     modImplementation("maven.modrinth:allthetrims:8XytcE1b")
+    modImplementation("maven.modrinth:modernfix:gepXNUac")
 
     common(project(path: ":common", configuration: "namedElements")) { transitive false }
     shadowCommon(project(path: ":common", configuration: "transformProductionForge")) { transitive = false }

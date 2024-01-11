@@ -19,6 +19,7 @@ dependencies {
 
     // compats
     modCompileOnly("maven.modrinth:allthetrims:${rootProject.allthetrims_version}")
+    modCompileOnly("maven.modrinth:modernfix:${rootProject.modernfix_version}")
 }
 
 publishing {

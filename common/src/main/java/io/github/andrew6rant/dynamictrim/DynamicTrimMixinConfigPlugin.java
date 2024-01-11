@@ -1,8 +1,8 @@
 package io.github.andrew6rant.dynamictrim;
 
-import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.andrew6rant.dynamictrim.annotation.ConditionalMixin;
+import io.github.andrew6rant.dynamictrim.compat.ModernFixCompat;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -18,7 +18,6 @@ import java.util.Set;
 public class DynamicTrimMixinConfigPlugin implements IMixinConfigPlugin {
     @Override
     public void onLoad(String mixinPackage) {
-        MixinExtrasBootstrap.init();
     }
 
     @Override
@@ -28,7 +27,11 @@ public class DynamicTrimMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetName, String className) {
-        return testClass(className);
+        boolean shouldApply = testClass(className);
+        if(shouldApply && className.contains("modernfix")) {
+            shouldApply = checkModernfixConfig();
+        }
+        return shouldApply;
     }
 
     public static boolean testClass(String className) {
@@ -53,6 +56,12 @@ public class DynamicTrimMixinConfigPlugin implements IMixinConfigPlugin {
             throw new RuntimeException(e);
         }
         return true;
+    }
+
+    private boolean checkModernfixConfig() {
+        if(!Compat.isModernFixLoaded()) return false;
+
+        return ModernFixCompat.isDynamicResourcesEnabled();
     }
 
     @Override

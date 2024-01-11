@@ -3,7 +3,7 @@ package io.github.andrew6rant.dynamictrim.mixin;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.sugar.Local;
 import io.github.andrew6rant.dynamictrim.Compat;
-import io.github.andrew6rant.dynamictrim.compat.allthetrims.AllTheTrimsCompat;
+import io.github.andrew6rant.dynamictrim.compat.AllTheTrimsCompat;
 import io.github.andrew6rant.dynamictrim.extend.InlinedConditionExtender;
 import io.github.andrew6rant.dynamictrim.extend.ModelOverrideConditionExtender;
 import io.github.andrew6rant.dynamictrim.mixin.accessor.BakedOverrideAccessor;

@@ -15,7 +15,8 @@
     "ModelOverrideMixin$DeserializerMixin",
     "accessor.BakedOverrideAccessor",
     "accessor.PalettedPermutationsAtlasSourceAccessor",
-    "allthetrims.AllTheTrimsClientMixin"
+    "allthetrims.AllTheTrimsClientMixin",
+    "modernfix.BakedModelManagerMixin"
   ],
   "mixins": [
     "SmithingTemplateItemMixin"

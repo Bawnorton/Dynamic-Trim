@@ -7,11 +7,13 @@ import net.minecraft.item.ArmorItem;
 import net.minecraft.registry.Registries;
 import net.minecraft.resource.Resource;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Util;
 
 import java.util.*;
 import java.util.function.Supplier;
 
 public class DynamicTrimLoader {
+    private static final Map<Identifier, TrimmableItem> TRIMMABLE_ITEMS = new HashMap<>();
     private static final Set<Supplier<Collection<TrimmableItem>>> CUSTOM = new HashSet<>();
 
     public static void addCustom(Supplier<Collection<TrimmableItem>> item) {
@@ -28,26 +30,43 @@ public class DynamicTrimLoader {
         };
     }
 
-    private static List<TrimmableItem> getArmourEntries() {
-        List<TrimmableItem> entries = new ArrayList<>();
-        Registries.ITEM.forEach(item -> {
-            if (!(item instanceof ArmorItem armour)) return;
-            Identifier id = Registries.ITEM.getId(item);
-            if (id.getNamespace().equals("betterend"))
-                return; // Better End dynamically generates models elsewhere. See bclib package - TODO
+    private static Map<Identifier, TrimmableItem> getTrimmableItems() {
+        if(TRIMMABLE_ITEMS.isEmpty()) {
+            Registries.ITEM.forEach(item -> {
+                if (!(item instanceof ArmorItem armour)) return;
+                Identifier id = Registries.ITEM.getId(item);
+                if (id.getNamespace().equals("betterend"))
+                    return; // Better End dynamically generates models elsewhere. See bclib package - TODO
 
-            String armourType = getArmourType(armour);
-            if (armourType != null) entries.add(new TrimmableItem(armourType, id));
-        });
-        return entries;
+                String armourType = getArmourType(armour);
+                TrimmableItem trimmable = new TrimmableItem(armourType, id);
+                if (armourType != null) TRIMMABLE_ITEMS.put(trimmable.resourceId(), trimmable);
+            });
+            CUSTOM.forEach(supplier -> {
+                Collection<TrimmableItem> trimmableItems = supplier.get();
+                trimmableItems.forEach(item -> TRIMMABLE_ITEMS.put(item.resourceId(), item));
+            });
+        }
+        return TRIMMABLE_ITEMS;
+    }
+
+    public static boolean isTrimmable(Identifier location) {
+        return getTrimmableItems().containsKey(location);
     }
 
     public static void loadDynamicTrims(Map<Identifier, Resource> resourceMap) {
-        List<TrimmableItem> trimmables = getArmourEntries();
-        CUSTOM.forEach(supplier -> trimmables.addAll(supplier.get()));
-        for (TrimmableItem item : trimmables) {
+        for (TrimmableItem item : getTrimmableItems().values()) {
             loadTrims(item, resourceMap);
         }
+    }
+
+    public static Map<Identifier, Resource> generateResourceMapForSingleTrim(Identifier location, Resource original) {
+        TrimmableItem item = getTrimmableItems().get(location);
+        if(item == null) return Map.of(location, original);
+
+        Map<Identifier, Resource> resourceMap = Util.make(new HashMap<>(), map -> map.put(location, original));
+        loadTrims(item, resourceMap);
+        return resourceMap;
     }
 
     private static void loadTrims(TrimmableItem item, Map<Identifier, Resource> resourceMap) {
