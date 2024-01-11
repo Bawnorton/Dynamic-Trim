@@ -1,7 +1,7 @@
 package io.github.andrew6rant.dynamictrim.mixin.fabric.client.bclib;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
-import io.github.andrew6rant.dynamictrim.annotation.ConditionalMixin;
+import io.github.andrew6rant.dynamictrim.util.mixin.annotation.ConditionalMixin;
 import net.minecraft.util.Identifier;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.spongepowered.asm.mixin.Mixin;

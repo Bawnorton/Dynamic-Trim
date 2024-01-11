@@ -1,4 +1,4 @@
-package io.github.andrew6rant.dynamictrim.annotation;
+package io.github.andrew6rant.dynamictrim.util.mixin.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

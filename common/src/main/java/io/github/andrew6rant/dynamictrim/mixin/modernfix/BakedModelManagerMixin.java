@@ -3,8 +3,9 @@ package io.github.andrew6rant.dynamictrim.mixin.modernfix;
 import com.bawnorton.mixinsquared.TargetHandler;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.andrew6rant.dynamictrim.annotation.ConditionalMixin;
+import io.github.andrew6rant.dynamictrim.util.mixin.annotation.AdvancedConditionalMixin;
 import io.github.andrew6rant.dynamictrim.resource.DynamicTrimLoader;
+import io.github.andrew6rant.dynamictrim.util.mixin.ModernFixConditionChecker;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
@@ -18,9 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Debug(export = true)
 @Mixin(value = BakedModelManager.class, priority = 1500)
-@ConditionalMixin(modid = "modernfix")
+@AdvancedConditionalMixin(checker = ModernFixConditionChecker.class)
 public abstract class BakedModelManagerMixin {
     @Unique
     private static final Map<Identifier, Resource> dynamicTrim$Overrides = new HashMap<>();

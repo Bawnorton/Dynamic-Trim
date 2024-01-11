@@ -1,8 +1,9 @@
 package io.github.andrew6rant.dynamictrim;
 
 import dev.architectury.injectables.annotations.ExpectPlatform;
-import io.github.andrew6rant.dynamictrim.annotation.ConditionalMixin;
-import io.github.andrew6rant.dynamictrim.compat.ModernFixCompat;
+import io.github.andrew6rant.dynamictrim.util.mixin.annotation.AdvancedConditionalMixin;
+import io.github.andrew6rant.dynamictrim.util.mixin.annotation.ConditionalMixin;
+import io.github.andrew6rant.dynamictrim.util.mixin.AdvancedConditionChecker;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
@@ -27,11 +28,7 @@ public class DynamicTrimMixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetName, String className) {
-        boolean shouldApply = testClass(className);
-        if(shouldApply && className.contains("modernfix")) {
-            shouldApply = checkModernfixConfig();
-        }
-        return shouldApply;
+        return testClass(className);
     }
 
     public static boolean testClass(String className) {
@@ -50,18 +47,18 @@ public class DynamicTrimMixinConfigPlugin implements IMixinConfigPlugin {
                         DynamicTrimClient.LOGGER.debug("DynamicTrimMixinPlugin: " + className + " is" + (!applyIfPresent ? " " : " not ") + "being applied because " + modid + " is not loaded");
                         return !applyIfPresent;
                     }
+                } else if (node.desc.equals(Type.getDescriptor(AdvancedConditionalMixin.class))) {
+                    Type checkerType = Annotations.getValue(node, "checker");
+                    AdvancedConditionChecker checker = AdvancedConditionChecker.create(checkerType);
+                    boolean shouldApply = checker.shouldApply();
+                    DynamicTrimClient.LOGGER.debug("DynamicTrimMixinPlugin: " + className + " is" + (shouldApply ? " " : " not ") + "being applied because " + checkerType.getClassName() + " returned " + shouldApply);
+                    return shouldApply;
                 }
             }
         } catch (ClassNotFoundException | IOException e) {
             throw new RuntimeException(e);
         }
         return true;
-    }
-
-    private boolean checkModernfixConfig() {
-        if(!Compat.isModernFixLoaded()) return false;
-
-        return ModernFixCompat.isDynamicResourcesEnabled();
     }
 
     @Override

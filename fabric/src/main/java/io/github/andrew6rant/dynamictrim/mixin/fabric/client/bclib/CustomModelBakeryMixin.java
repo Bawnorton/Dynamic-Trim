@@ -1,7 +1,7 @@
 package io.github.andrew6rant.dynamictrim.mixin.fabric.client.bclib;
 
 import com.llamalad7.mixinextras.sugar.Local;
-import io.github.andrew6rant.dynamictrim.annotation.ConditionalMixin;
+import io.github.andrew6rant.dynamictrim.util.mixin.annotation.ConditionalMixin;
 import net.minecraft.client.render.model.json.JsonUnbakedModel;
 import net.minecraft.util.Identifier;
 import org.betterx.bclib.client.models.CustomModelBakery;

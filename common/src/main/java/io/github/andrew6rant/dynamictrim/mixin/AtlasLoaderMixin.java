@@ -7,7 +7,6 @@ import net.minecraft.client.texture.atlas.AtlasLoader;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.io.BufferedReader;
@@ -15,9 +14,6 @@ import java.util.List;
 
 @Mixin(AtlasLoader.class)
 public abstract class AtlasLoaderMixin {
-    @Unique
-
-
     @ModifyExpressionValue(method = "of", at = @At(value = "INVOKE", target = "Lnet/minecraft/resource/Resource;getReader()Ljava/io/BufferedReader;"))
     private static BufferedReader appendGroupPermutationsToAtlasSources(BufferedReader original, ResourceManager manager, Identifier id) {
         if (!id.equals(new Identifier("blocks"))) return original;
