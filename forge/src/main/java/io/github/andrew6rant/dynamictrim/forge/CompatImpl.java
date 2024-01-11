@@ -6,8 +6,4 @@ public class CompatImpl {
     public static boolean isAllTheTrimsLoaded() {
         return ModList.get().isLoaded("allthetrims");
     }
-
-    public static boolean isModernFixLoaded() {
-        return ModList.get().isLoaded("modernfix");
-    }
 }

@@ -6,8 +6,4 @@ public class CompatImpl {
     public static boolean isAllTheTrimsLoaded() {
         return FabricLoader.getInstance().isModLoaded("allthetrims");
     }
-
-    public static boolean isModernFixLoaded() {
-        return FabricLoader.getInstance().isModLoaded("modernfix");
-    }
 }

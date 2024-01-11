@@ -82,7 +82,7 @@ public class DynamicTrimMixinConfigPlugin implements IMixinConfigPlugin {
     }
 
     @ExpectPlatform
-    private static boolean isModLoaded(String modid) {
+    public static boolean isModLoaded(String modid) {
         throw new AssertionError();
     }
 }
