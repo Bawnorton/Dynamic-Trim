@@ -3,14 +3,13 @@ package io.github.andrew6rant.dynamictrim.mixin.modernfix;
 import com.bawnorton.mixinsquared.TargetHandler;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import io.github.andrew6rant.dynamictrim.util.mixin.annotation.AdvancedConditionalMixin;
 import io.github.andrew6rant.dynamictrim.resource.DynamicTrimLoader;
 import io.github.andrew6rant.dynamictrim.util.mixin.ModernFixConditionChecker;
+import io.github.andrew6rant.dynamictrim.util.mixin.annotation.AdvancedConditionalMixin;
 import net.minecraft.client.render.model.BakedModelManager;
 import net.minecraft.resource.Resource;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.util.Identifier;
-import org.spongepowered.asm.mixin.Debug;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,7 +30,7 @@ public abstract class BakedModelManagerMixin {
             name = "loadSingleBlockModel"
     )
     @WrapOperation(method = "@MixinSquared:Handler", at = @At(value = "INVOKE", target = "net/minecraft/resource/ResourceManager.getResource(Lnet/minecraft/util/Identifier;)Ljava/util/Optional;"))
-    private Optional<Resource> loadSingleBlockModel(ResourceManager instance, Identifier location, Operation<Optional<Resource>> original) {
+    private Optional<Resource> loadDynamicTrims(ResourceManager instance, Identifier location, Operation<Optional<Resource>> original) {
         if(dynamicTrim$Overrides.containsKey(location)) {
             return Optional.of(dynamicTrim$Overrides.remove(location));
         }
