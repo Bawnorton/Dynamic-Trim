@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" factoryName="Application" name="Minecraft Client (:1.21-fabric)" type="Application">
+    <option name="MAIN_CLASS_NAME" value="net.fabricmc.devlaunchinjector.Main"/>
+    <module name="AllTheTrims.1.21-fabric.main"/>
+    <option name="PROGRAM_PARAMETERS" value="--username=Bawnorton"/>
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=/Users/bawnorton/Developer/Minecraft/Modding/BawnortonModTemplate/versions/1.21-fabric/.gradle/loom-cache/launch.cfg -Dfabric.dli.env=client -Dmixin.debug.export=true -XstartOnFirstThread -Dfabric.dli.main=net.fabricmc.loader.launch.knot.KnotClient"/>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/versions/1.21-fabric/../../run/"/>
+    <method v="2">
+      <option enabled="true" name="Make"/>
+    </method>
+    <envs>
+      
+    </envs>
+    <shortenClasspath name="ARGS_FILE"/>
+  <classpathModifications/></configuration>
+</component>
