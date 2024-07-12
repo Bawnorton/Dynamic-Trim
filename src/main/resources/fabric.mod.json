@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [
+    "Bawnorton"
+  ],
+  "contact": {
+    "homepage": "https://github.com/Bawnorton",
+    "sources": "https://github.com/Bawnorton/${mod_name}",
+    "issues": "https://github.com/Bawnorton/${mod_name}/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/${mod_id}/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.bawnorton.modid.platform.ModIdWrapper"
+    ],
+    "client": [
+      "com.bawnorton.modid.client.platform.ModIdClientWrapper"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}-compat.mixins.json",
+    {
+      "config": "${mod_id}-client.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "${minecraft_dependency}",
+    "java": ">=21",
+    "fabric-api": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "${mod_id}.website": "https://github.com/Bawnorton/${mod_name}"
+      }
+    }
+  }
+}

@@ -11,6 +11,7 @@ plugins {
 class ModData {
     val id = property("mod_id").toString()
     val name = property("mod_name").toString()
+    val description = property("mod_description").toString()
     val version = property("mod_version").toString()
     val group = property("mod_group").toString()
     val minecraftDependency = property("minecraft_dependency").toString()
@@ -97,10 +98,16 @@ tasks {
     }
 
     processResources {
-        val compatMixins = CompatMixins().getMixins()
+        val mixinMetadata = mapOf("mod_id" to mod.id)
+        inputs.properties(mixinMetadata)
 
+        filesMatching("${mod.id}.mixins.json") { expand(mixinMetadata) }
+        filesMatching("${mod.id}-client.mixins.json") { expand(mixinMetadata) }
+
+        val compatMixins = CompatMixins().getMixins()
         inputs.properties(compatMixins)
-        filesMatching("${mod.id}-compat.mixins.json") { expand(compatMixins) }
+
+        filesMatching("${mod.id}-compat.mixins.json") { expand(compatMixins + mixinMetadata) }
     }
 }
 
@@ -128,11 +135,15 @@ if (stonecutter.current.isActive) {
 if(loader.isFabric) {
     dependencies {
         mappings("net.fabricmc:yarn:$minecraftVersion+build.${property("yarn_build")}:v2")
+        modImplementation("net.fabricmc:fabric-loader:${loader.getVersion()}")
     }
 
     tasks {
         processResources {
             val modMetadata = mapOf(
+                "mod_id" to mod.id,
+                "mod_name" to mod.name,
+                "description" to mod.description,
                 "version" to mod.version,
                 "minecraft_dependency" to mod.minecraftDependency
             )
@@ -156,6 +167,9 @@ if (loader.isNeoForge) {
     tasks {
         processResources {
             val modMetadata = mapOf(
+                "mod_id" to mod.id,
+                "mod_name" to mod.name,
+                "description" to mod.description,
                 "version" to mod.version,
                 "minecraft_dependency" to mod.minecraftDependency,
                 "loader_version" to loader.getVersion()
