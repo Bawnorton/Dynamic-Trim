@@ -2,46 +2,11 @@
 
 plugins {
     `maven-publish`
+    java
     kotlin("jvm") version "1.9.22"
     id("dev.architectury.loom") version "1.7-SNAPSHOT"
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
-}
-
-class ModData {
-    val id = property("mod_id").toString()
-    val name = property("mod_name").toString()
-    val description = property("mod_description").toString()
-    val version = property("mod_version").toString()
-    val group = property("mod_group").toString()
-    val minecraftDependency = property("minecraft_dependency").toString()
-    val supportedVersions = property("supported_versions").toString()
-    val modrinthProjId = property("modrinth_project_id").toString()
-    val curseforgeProjId = property("curseforge_project_id").toString()
-}
-
-class LoaderData {
-    private val name = loom.platform.get().name.lowercase()
-    val isFabric = name == "fabric"
-    val isNeoForge = name == "neoforge"
-
-    fun getVersion() : String = if (isNeoForge) {
-        property("neoforge_loader").toString()
-    } else {
-        property("fabric_loader").toString()
-    }
-
-    override fun toString(): String = name
-}
-
-class MinecraftVersionData {
-    private val name = stonecutter.current.version.substringBeforeLast("-")
-
-    fun equalTo(other: String) : Boolean = stonecutter.compare(name, other.lowercase()) == 0
-    fun greaterThan(other: String) : Boolean = stonecutter.compare(name, other.lowercase()) > 0
-    fun lessThan(other: String) : Boolean = stonecutter.compare(name, other.lowercase()) < 0
-
-    override fun toString(): String = name
 }
 
 class CompatMixins {
@@ -57,11 +22,9 @@ class CompatMixins {
     }
 }
 
-fun DependencyHandler.neoForge(dep: Any) = add("neoForge", dep)
-
-val mod = ModData()
-val loader = LoaderData()
-val minecraftVersion = MinecraftVersionData()
+val mod = ModData(project)
+val loader = LoaderData(project, loom.platform.get().name.lowercase())
+val minecraftVersion = MinecraftVersionData(stonecutter)
 val awName = "${mod.id}.accesswidener"
 
 version = "${mod.version}-$loader+$minecraftVersion"
@@ -71,7 +34,9 @@ base.archivesName.set(mod.name)
 repositories {
     mavenCentral()
     maven("https://maven.neoforged.net/releases/")
+    maven("https://maven.bawnorton.com/releases/")
     maven("https://maven.shedaniel.me")
+    maven("https://jitpack.io")
 }
 
 dependencies {
@@ -98,16 +63,9 @@ tasks {
     }
 
     processResources {
-        val mixinMetadata = mapOf("mod_id" to mod.id)
-        inputs.properties(mixinMetadata)
-
-        filesMatching("${mod.id}.mixins.json") { expand(mixinMetadata) }
-        filesMatching("${mod.id}-client.mixins.json") { expand(mixinMetadata) }
-
         val compatMixins = CompatMixins().getMixins()
         inputs.properties(compatMixins)
-
-        filesMatching("${mod.id}-compat.mixins.json") { expand(compatMixins + mixinMetadata) }
+        filesMatching("${mod.id}-compat.mixins.json") { expand(compatMixins) }
     }
 }
 
@@ -133,6 +91,12 @@ if (stonecutter.current.isActive) {
 }
 
 if(loader.isFabric) {
+    fabricApi {
+        configureDataGeneration {
+            outputDirectory = rootProject.rootDir.resolve("src/main/generated")
+        }
+    }
+
     dependencies {
         mappings("net.fabricmc:yarn:$minecraftVersion+build.${property("yarn_build")}:v2")
         modImplementation("net.fabricmc:fabric-loader:${loader.getVersion()}")
@@ -155,13 +119,18 @@ if(loader.isFabric) {
 }
 
 if (loader.isNeoForge) {
-    dependencies {
-        neoForge("net.neoforged:neoforge:${loader.getVersion()}")
+    sourceSets {
+        main {
+            resources.srcDir(rootProject.rootDir.resolve("src/main/generated"))
+        }
+    }
 
+    dependencies {
         mappings(loom.layered {
             mappings("net.fabricmc:yarn:$minecraftVersion+build.${property("yarn_build")}:v2")
             mappings("dev.architectury:yarn-mappings-patch-neoforge:1.21+build.4")
         })
+        neoForge("net.neoforged:neoforge:${loader.getVersion()}")
     }
 
     tasks {
@@ -220,7 +189,6 @@ publishMods {
         accessToken = providers.gradleProperty("GITHUB_TOKEN")
         repository = "Bawnorton/${mod.name}"
         commitish = branch
-        changelog = getRootProject().file("CHANGELOG.md").readLines().joinToString("\n")
         tagName = tag
     }
 
