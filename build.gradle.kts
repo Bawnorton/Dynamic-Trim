@@ -9,19 +9,6 @@ plugins {
     id("me.modmuss50.mod-publish-plugin") version "0.5.+"
 }
 
-class CompatMixins {
-    private var common : List<String> = listOf()
-    private var fabric : List<String> = listOf()
-    private var neoforge : List<String> = listOf()
-
-    fun getMixins() : Map<String, String> {
-        val mixins = common + if(loader.isFabric) fabric else neoforge
-        return mapOf(
-            "compat_mixins" to "[\n${mixins.joinToString(",\n") { "\"$it\"" }}\n]"
-        )
-    }
-}
-
 val mod = ModData(project)
 val loader = LoaderData(project, loom.platform.get().name.lowercase())
 val minecraftVersion = MinecraftVersionData(stonecutter)
@@ -52,8 +39,32 @@ loom {
     }
 
     runConfigs["client"].apply {
-        vmArgs("-Dmixin.debug.export=true")
-        programArgs("--username=Bawnorton")
+        programArgs("--username=Bawnorton", "--uuid=17c06cab-bf05-4ade-a8d6-ed14aaf70545")
+    }
+
+    runs {
+        afterEvaluate {
+            val mixinJarFile = configurations.runtimeClasspath.get().incoming.artifactView {
+                componentFilter {
+                    it is ModuleComponentIdentifier && it.group == "net.fabricmc" && it.module == "sponge-mixin"
+                }
+            }.files.first()
+
+            configureEach {
+                vmArg("-javaagent:$mixinJarFile")
+
+                property("mixin.hotSwap", "true")
+                property("mixin.debug.export", "true")
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            resources {
+                srcDir(project.file("src/main/generated"))
+            }
+        }
     }
 }
 
@@ -63,68 +74,68 @@ tasks {
     }
 
     processResources {
-        val compatMixins = CompatMixins().getMixins()
-        inputs.properties(compatMixins)
-        filesMatching("${mod.id}-compat.mixins.json") { expand(compatMixins) }
+        val modMetadata = mapOf(
+            "description" to mod.description,
+            "version" to mod.version,
+            "minecraft_dependency" to mod.minecraftDependency,
+            "minecraft_version" to minecraftVersion.toString(),
+            "loader_version" to loader.getVersion()
+        )
+
+        inputs.properties(modMetadata)
+        filesMatching("fabric.mod.json") { expand(modMetadata) }
+        filesMatching("META-INF/neoforge.mods.toml") { expand(modMetadata) }
+    }
+
+    jar {
+        dependsOn("copyDatagen")
+    }
+
+    withType<AbstractCopyTask> {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
+
+    clean {
+        delete(file(rootProject.file("build")))
     }
 }
 
 java {
     withSourcesJar()
 
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.toVersion(minecraftVersion.javaVersion())
+    targetCompatibility = JavaVersion.toVersion(minecraftVersion.javaVersion())
 }
 
-val buildAndCollect = tasks.register<Copy>("buildAndCollect") {
+tasks.register<Copy>("buildAndCollect") {
     group = "build"
     from(tasks.remapJar.get().archiveFile)
     into(rootProject.layout.buildDirectory.file("libs/${mod.version}"))
     dependsOn("build")
 }
 
-if (stonecutter.current.isActive) {
-    rootProject.tasks.register("buildActive") {
-        group = "project"
-        dependsOn(buildAndCollect)
-    }
-}
-
-if(loader.isFabric) {
-    fabricApi {
-        configureDataGeneration {
-            outputDirectory = rootProject.rootDir.resolve("src/main/generated")
-        }
-    }
-
+loader.fabric {
     dependencies {
         mappings("net.fabricmc:yarn:$minecraftVersion+build.${property("yarn_build")}:v2")
         modImplementation("net.fabricmc:fabric-loader:${loader.getVersion()}")
     }
 
-    tasks {
-        processResources {
-            val modMetadata = mapOf(
-                "mod_id" to mod.id,
-                "mod_name" to mod.name,
-                "description" to mod.description,
-                "version" to mod.version,
-                "minecraft_dependency" to mod.minecraftDependency
-            )
+    fabricApi {
+        configureDataGeneration {
+            modId = mod.id
+        }
+    }
 
-            inputs.properties(modMetadata)
-            filesMatching("fabric.mod.json") { expand(modMetadata) }
+    tasks {
+        register<Copy>("copyDatagen") {
+            from("src/main/generated")
+            into("${layout.buildDirectory.get()}/resources/main")
+            dependsOn("runDatagen")
         }
     }
 }
 
-if (loader.isNeoForge) {
-    sourceSets {
-        main {
-            resources.srcDir(rootProject.rootDir.resolve("src/main/generated"))
-        }
-    }
-
+loader.neoforge {
     dependencies {
         mappings(loom.layered {
             mappings("net.fabricmc:yarn:$minecraftVersion+build.${property("yarn_build")}:v2")
@@ -134,22 +145,13 @@ if (loader.isNeoForge) {
     }
 
     tasks {
-        processResources {
-            val modMetadata = mapOf(
-                "mod_id" to mod.id,
-                "mod_name" to mod.name,
-                "description" to mod.description,
-                "version" to mod.version,
-                "minecraft_dependency" to mod.minecraftDependency,
-                "loader_version" to loader.getVersion()
-            )
-
-            inputs.properties(modMetadata)
-            filesMatching("META-INF/neoforge.mods.toml") { expand(modMetadata) }
+        remapJar {
+            atAccessWideners.add("$minecraftVersion.accesswidener")
         }
 
-        remapJar {
-            atAccessWideners.add(awName)
+        register<Copy>("copyDatagen") {
+            from(rootProject.file("versions/${minecraftVersion}-fabric/src/main/generated"))
+            into("${layout.buildDirectory.get()}/resources/main")
         }
     }
 }

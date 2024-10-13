@@ -25,14 +25,13 @@
   },
   "mixins": [
     "${mod_id}.mixins.json",
-    "${mod_id}-compat.mixins.json",
     {
       "config": "${mod_id}-client.mixins.json",
       "environment": "client"
     }
   ],
   "depends": {
-    "fabricloader": ">=0.15.0",
+    "fabricloader": ">=0.16.0",
     "minecraft": "${minecraft_dependency}",
     "java": ">=21",
     "fabric-api": "*"

@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.bawnorton.${mod_id}.client.mixin",
+  "package": "com.bawnorton.mod_id.client.mixin",
   "minVersion": "0.8",
   "mixins": [
   ],
