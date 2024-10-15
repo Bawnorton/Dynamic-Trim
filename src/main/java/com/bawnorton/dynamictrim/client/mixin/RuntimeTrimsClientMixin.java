@@ -16,7 +16,8 @@ public abstract class RuntimeTrimsClientMixin {
 
     @Inject(
             method = "init",
-            at = @At("TAIL")
+            at = @At("TAIL"),
+            remap = false
     )
     private static void overwriteDefaultModelLoaderAdapater(CallbackInfo ci) {
         itemModelLoader.setDefaultAdapter(new DynamicTrimsTrimModelLoaderAdapter());

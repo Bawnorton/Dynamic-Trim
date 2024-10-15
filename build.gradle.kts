@@ -41,6 +41,13 @@ dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
 
     modImplementation("com.bawnorton.runtimetrims:runtimetrims-$loader:${property("runtimetrims")}+$minecraftVersion")
+    modImplementation("com.bawnorton.allthetrims:allthetrims-$loader:${property("allthetrims")}+$minecraftVersion")
+
+    modImplementation("maven.modrinth:iris:${property("iris")}")
+    modImplementation("maven.modrinth:sodium:${property("sodium")}")
+    modRuntimeOnly("org.antlr:antlr4-runtime:4.13.1")
+    modRuntimeOnly("io.github.douira:glsl-transformer:2.0.1")
+    modRuntimeOnly("org.anarres:jcpp:1.4.14")
 }
 
 loom {
@@ -131,6 +138,9 @@ loader.fabric {
     dependencies {
         mappings("net.fabricmc:yarn:$minecraftVersion+build.${property("yarn_build")}:v2")
         modImplementation("net.fabricmc:fabric-loader:${loader.getVersion()}")
+        modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_api")}+$minecraftVersion")
+
+        modImplementation("com.terraformersmc:modmenu:${property("mod_menu")}")
     }
 
     fabricApi {
