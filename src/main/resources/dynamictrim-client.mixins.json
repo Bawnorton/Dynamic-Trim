@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "com.bawnorton.dynamictrim.client.mixin",
+  "minVersion": "0.8",
+  "mixins": [
+    "ArmorTrimPatternMixin",
+    "SmithingTemplateItemMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "RuntimeTrimsClientMixin",
+    "MinecraftClientMixin",
+    "ModelPredicateProviderRegistryMixin"
+  ]
+}

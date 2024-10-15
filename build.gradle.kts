@@ -12,22 +12,35 @@ plugins {
 val mod = ModData(project)
 val loader = LoaderData(project, loom.platform.get().name.lowercase())
 val minecraftVersion = MinecraftVersionData(stonecutter)
-val awName = "${mod.id}.accesswidener"
+val awName = "$minecraftVersion.accesswidener"
 
 version = "${mod.version}-$loader+$minecraftVersion"
 group = mod.group
 base.archivesName.set(mod.name)
 
 repositories {
+    mavenLocal()
     mavenCentral()
+    exclusiveContent {
+        forRepository { maven("https://api.modrinth.com/maven") }
+        filter { includeGroup("maven.modrinth") }
+    }
+    maven("https://cursemaven.com")
     maven("https://maven.neoforged.net/releases/")
-    maven("https://maven.bawnorton.com/releases/")
+    maven("https://maven.isxander.dev/releases")
+    maven("https://maven.terraformersmc.com/")
+    maven("https://maven.ladysnake.org/releases")
+    maven("https://maven.enjarai.dev/releases")
     maven("https://maven.shedaniel.me")
+    maven("https://maven.blamejared.com/")
     maven("https://jitpack.io")
+    maven("https://maven.bawnorton.com/releases")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
+
+    modImplementation("com.bawnorton.runtimetrims:runtimetrims-$loader:${property("runtimetrims")}+$minecraftVersion")
 }
 
 loom {

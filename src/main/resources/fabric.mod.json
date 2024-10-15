@@ -1,32 +1,32 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "dynamictrim",
   "version": "${version}",
-  "name": "${mod_name}",
+  "name": "Dynamic-Trim",
   "description": "${description}",
   "authors": [
     "Bawnorton"
   ],
   "contact": {
     "homepage": "https://github.com/Bawnorton",
-    "sources": "https://github.com/Bawnorton/${mod_name}",
-    "issues": "https://github.com/Bawnorton/${mod_name}/issues"
+    "sources": "https://github.com/Bawnorton/Dynamic-Trim",
+    "issues": "https://github.com/Bawnorton/Dynamic-Trim/issues"
   },
   "license": "MIT",
-  "icon": "assets/${mod_id}/icon.png",
+  "icon": "assets/dynamictrim/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.bawnorton.modid.platform.ModIdWrapper"
+      "com.bawnorton.dynamictrim.platform.DynamicTrimWrapper"
     ],
     "client": [
-      "com.bawnorton.modid.client.platform.ModIdClientWrapper"
+      "com.bawnorton.dynamictrim.client.platform.DynamicTrimClientWrapper"
     ]
   },
   "mixins": [
-    "${mod_id}.mixins.json",
+    "dynamictrim.mixins.json",
     {
-      "config": "${mod_id}-client.mixins.json",
+      "config": "dynamictrim-client.mixins.json",
       "environment": "client"
     }
   ],
@@ -39,7 +39,7 @@
   "custom": {
     "modmenu": {
       "links": {
-        "${mod_id}.website": "https://github.com/Bawnorton/${mod_name}"
+        "dynamictrim.website": "https://github.com/Bawnorton/Dynamic-Trim"
       }
     }
   }

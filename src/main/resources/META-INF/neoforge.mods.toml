@@ -1,25 +1,25 @@
 modLoader = "javafml"
 loaderVersion = "${loader_version}"
-issueTrackerURL = "https://github.com/Bawnorton/${mod_name}/issues"
+issueTrackerURL = "https://github.com/Bawnorton/Dynamic-Trim/issues"
 license = "MIT"
 
 [[mods]]
-modId = "${mod_id}"
+modId = "dynamictrim"
 version = "${version}"
-displayName = "${mod_name}"
+displayName = "Dynamic-Trim"
 authors = "Bawnorton"
 description = '''
 ${description}
 '''
-logoFile = "assets/${mod_id}/icon.png"
+logoFile = "assets/dynamictrim/icon.png"
 
 [[mixins]]
-config = "${mod_id}.mixins.json"
+config = "dynamictrim.mixins.json"
 
 [[mixins]]
-config = "${mod_id}-client.mixins.json"
+config = "dynamictrim-client.mixins.json"
 
-[[dependencies.${mod_id}]]
+[[dependencies.dynamictrim]]
 modId = "minecraft"
 type = "required"
 versionRange = "${minecraft_dependency}"
