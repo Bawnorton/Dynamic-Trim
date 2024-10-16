@@ -15,11 +15,11 @@ class LoaderData(private val project: Project, private val name: String) {
         return name
     }
 
-    fun neoforge(container: () -> TaskContainer) {
+    fun neoforge(container: () -> Unit) {
         if(isNeoForge) container.invoke()
     }
 
-    fun fabric(container: () -> TaskContainer) {
+    fun fabric(container: () -> Unit) {
         if(isFabric) container.invoke()
     }
 }

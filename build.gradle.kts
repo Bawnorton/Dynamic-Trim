@@ -81,14 +81,6 @@ loom {
             }
         }
     }
-
-    sourceSets {
-        main {
-            resources {
-                srcDir(project.file("src/main/generated"))
-            }
-        }
-    }
 }
 
 tasks {
@@ -108,10 +100,6 @@ tasks {
         inputs.properties(modMetadata)
         filesMatching("fabric.mod.json") { expand(modMetadata) }
         filesMatching("META-INF/neoforge.mods.toml") { expand(modMetadata) }
-    }
-
-    jar {
-        dependsOn("copyDatagen")
     }
 
     withType<AbstractCopyTask> {
@@ -154,20 +142,6 @@ loader.fabric {
         modRuntimeOnly("org.ladysnake.cardinal-components-api:cardinal-components-base:${property("cca")}")
         modRuntimeOnly("org.ladysnake.cardinal-components-api:cardinal-components-entity:${property("cca")}")
     }
-
-    fabricApi {
-        configureDataGeneration {
-            modId = mod.id
-        }
-    }
-
-    tasks {
-        register<Copy>("copyDatagen") {
-            from("src/main/generated")
-            into("${layout.buildDirectory.get()}/resources/main")
-            dependsOn("runDatagen")
-        }
-    }
 }
 
 loader.neoforge {
@@ -182,11 +156,6 @@ loader.neoforge {
     tasks {
         remapJar {
             atAccessWideners.add("$minecraftVersion.accesswidener")
-        }
-
-        register<Copy>("copyDatagen") {
-            from(rootProject.file("versions/${minecraftVersion}-fabric/src/main/generated"))
-            into("${layout.buildDirectory.get()}/resources/main")
         }
     }
 }
