@@ -35,13 +35,16 @@ repositories {
     maven("https://maven.blamejared.com/")
     maven("https://jitpack.io")
     maven("https://maven.bawnorton.com/releases")
+    maven("https://maven.fallenbreath.me/releases")
 }
 
 dependencies {
     minecraft("com.mojang:minecraft:$minecraftVersion")
 
-    modImplementation("com.bawnorton.runtimetrims:runtimetrims-$loader:${property("runtimetrims")}+$minecraftVersion")
-    modImplementation("com.bawnorton.allthetrims:allthetrims-$loader:${property("allthetrims")}+$minecraftVersion")
+    modImplementation("com.bawnorton.runtimetrims:runtimetrims-$loader:${property("runtimetrims")}+$minecraftVersion") {
+        exclude("com.bawnorton.allthetrims")
+    }
+    modImplementation("com.bawnorton.allthetrims:allthetrims-$loader:${property("allthetrims")}+$minecraftVersion") { isTransitive = false }
 
     modImplementation("maven.modrinth:iris:${property("iris")}")
     modImplementation("maven.modrinth:sodium:${property("sodium")}")
@@ -141,6 +144,15 @@ loader.fabric {
         modImplementation("net.fabricmc.fabric-api:fabric-api:${property("fabric_api")}+$minecraftVersion")
 
         modImplementation("com.terraformersmc:modmenu:${property("mod_menu")}")
+
+        modRuntimeOnly("maven.modrinth:elytra-trims:${property("elytra_trims")}")
+        modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.12.3+kotlin.2.0.21")
+        modRuntimeOnly("me.fallenbreath:conditional-mixin-fabric:0.6.3")
+
+        modRuntimeOnly("maven.modrinth:show-me-your-skin:${property("show_me_your_skin")}")
+        modRuntimeOnly("maven.modrinth:cicada:${property("cicada")}")
+        modRuntimeOnly("org.ladysnake.cardinal-components-api:cardinal-components-base:${property("cca")}")
+        modRuntimeOnly("org.ladysnake.cardinal-components-api:cardinal-components-entity:${property("cca")}")
     }
 
     fabricApi {
@@ -221,11 +233,19 @@ publishMods {
         accessToken = providers.gradleProperty("MODRINTH_TOKEN")
         projectId = mod.modrinthProjId
         minecraftVersions.addAll(mod.supportedVersions)
+
+        requires {
+            slug = "runtimetrims"
+        }
     }
 
     curseforge {
         accessToken = providers.gradleProperty("CURSEFORGE_TOKEN")
         projectId = mod.curseforgeProjId
         minecraftVersions.addAll(mod.supportedVersions)
+
+        requires {
+            slug = "runtimetrims"
+        }
     }
 }
